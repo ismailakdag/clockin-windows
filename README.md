@@ -20,7 +20,7 @@ The self-contained executable is written to `dist\windows\Clockin.exe`.
 - `Ctrl+Alt+O`: clock out
 - `Ctrl+Alt+E`: show Clockin
 - The main window can be hidden to the Windows tray.
-- Tray-only status and the pinned timer can be dragged and remember their positions.
+- Tray-only mode uses the Windows notification-area icon beside the system clock; the pinned timer can be dragged and remembers its position.
 
 ## Data and import
 

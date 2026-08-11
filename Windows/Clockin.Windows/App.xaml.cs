@@ -13,7 +13,6 @@ public partial class App : Application
     private string _trayTheme = "";
     private MainWindow? _main;
     private PinnedWindow? _pinned;
-    private TrayStatusWindow? _trayStatus;
     private readonly DispatcherTimer _trayTimer = new() { Interval = TimeSpan.FromSeconds(1) };
 
     public ClockStore Store { get; } = new();
@@ -72,7 +71,7 @@ public partial class App : Application
         menu.Items.Add(SettingStore.Shared.GetBool("MinimalMode") ? "Exit tray-only mode" : "Use tray-only mode", null, (_, _) =>
         {
             var next = !SettingStore.Shared.GetBool("MinimalMode"); SettingStore.Shared.Set("MinimalMode", next);
-            if (next) { SettingStore.Shared.Set("PinVisibleBeforeMinimal", Store.PinVisible); Store.SetPinned(false); _main?.Hide(); EnsureTrayStatus(); } else { _trayStatus?.Hide(); ShowMain(); Store.SetPinned(SettingStore.Shared.GetBool("PinVisibleBeforeMinimal")); }
+            if (next) { SettingStore.Shared.Set("PinVisibleBeforeMinimal", Store.PinVisible); Store.SetPinned(false); _main?.Hide(); } else { ShowMain(); Store.SetPinned(SettingStore.Shared.GetBool("PinVisibleBeforeMinimal")); }
             RebuildTrayMenu();
         });
         menu.Items.Add(new ToolStripSeparator());
@@ -116,13 +115,6 @@ public partial class App : Application
         });
     }
 
-    private void EnsureTrayStatus()
-    {
-        _trayStatus ??= new TrayStatusWindow(Store, ExchangeRates, this);
-        if (!_trayStatus.IsVisible) _trayStatus.Show();
-        _trayStatus.Update();
-    }
-
     private void UpdateTrayPresentation()
     {
         if (!Dispatcher.CheckAccess()) { Dispatcher.BeginInvoke(UpdateTrayPresentation); return; }
@@ -131,7 +123,6 @@ public partial class App : Application
         var text = $"Clockin · {status} · {DurationText.Clock(Store.Elapsed())}";
         if (minimal && SettingStore.Shared.GetBool("MinimalShowEarnings", true)) text += $" · {MoneyText.Money(Store.CurrentEarnings(), Store.CurrencyCode)}";
         if (_tray is not null) _tray.Text = text.Length > 63 ? text[..63] : text;
-        if (minimal) EnsureTrayStatus(); else _trayStatus?.Hide();
     }
 
     public void ShowMain()
@@ -147,7 +138,6 @@ public partial class App : Application
         FocusChime.Stop();
         HotKeyManager.Stop();
         _pinned?.Close();
-        _trayStatus?.Close();
         _trayTimer.Stop();
         SettingStore.Shared.Changed -= SettingsChanged;
         _tray?.Dispose();
@@ -159,7 +149,6 @@ public partial class App : Application
     protected override void OnExit(ExitEventArgs e)
     {
         _trayTimer.Stop();
-        _trayStatus?.Close();
         SettingStore.Shared.Changed -= SettingsChanged;
         _tray?.Dispose();
         _trayIcon?.Dispose();
