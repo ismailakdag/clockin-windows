@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using WpfButton = System.Windows.Controls.Button;
 using WpfBrushes = System.Windows.Media.Brushes;
-using WpfColor = System.Windows.Media.Color;
 using WpfControl = System.Windows.Controls.Control;
 using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
 using WpfOrientation = System.Windows.Controls.Orientation;
@@ -69,7 +68,7 @@ public static class ClockinDialog
         if (destructive)
         {
             action.SetResourceReference(WpfControl.BackgroundProperty, "CardBrush");
-            action.Foreground = new SolidColorBrush(WpfColor.FromRgb(224, 122, 120));
+            action.SetResourceReference(WpfControl.ForegroundProperty, "DangerBrush");
             action.SetResourceReference(WpfControl.BorderBrushProperty, "CardStrokeBrush");
         }
         else

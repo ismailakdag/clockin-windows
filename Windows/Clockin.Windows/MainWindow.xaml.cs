@@ -54,9 +54,17 @@ public partial class MainWindow : Window
         Resources["TextBrush"] = new SolidColorBrush(theme.Color(theme.Text));
         Resources["MutedBrush"] = new SolidColorBrush(theme.Color(theme.Muted));
         Resources["ActionForegroundBrush"] = new SolidColorBrush(theme.Color(theme.ActionForeground));
+        Resources["SuccessBrush"] = new SolidColorBrush(theme.Color(theme.Success));
+        Resources["WarningBrush"] = new SolidColorBrush(theme.Color(theme.Warning));
+        Resources["DangerBrush"] = new SolidColorBrush(theme.Color(theme.Danger));
         FontFamily = new System.Windows.Media.FontFamily(theme.FontFamily);
         FontSize = 12 * ThemeManager.TextScale(_settings);
         ApplyTextScale();
+        ClockInButton.SetResourceReference(WpfButton.BackgroundProperty, "SuccessBrush");
+        ClockInButton.SetResourceReference(WpfButton.ForegroundProperty, "ActionForegroundBrush");
+        ClockOutButton.SetResourceReference(WpfButton.BackgroundProperty, "DangerBrush");
+        ClockOutButton.SetResourceReference(WpfButton.ForegroundProperty, "ActionForegroundBrush");
+        ClockOutButton.SetResourceReference(WpfButton.BorderBrushProperty, "DangerBrush");
     }
 
     private void ApplyTextScale()
@@ -78,10 +86,14 @@ public partial class MainWindow : Window
         EarningsText.Text = MoneyText.Money(current, _store.CurrencyCode);
         TryText.Text = _store.CurrencyCode == "USD" && _rates.LatestRate is { } rate ? $"≈ {MoneyText.Money(current * rate, "TRY")}" : "";
         StatusText.Text = running is null ? "READY TO FOCUS" : running.IsPaused ? "PAUSED" : "FOCUS SESSION";
-        StatusDot.Fill = new SolidColorBrush(theme.Color(running is null ? theme.Muted : running.IsPaused ? "#FF9F43" : theme.Accent));
+        var statusBrush = new SolidColorBrush(theme.Color(running is null ? theme.Muted : running.IsPaused ? theme.Warning : theme.Success));
+        StatusDot.Fill = statusBrush;
+        StatusText.Foreground = statusBrush;
         IdleControls.Visibility = running is null ? Visibility.Visible : Visibility.Collapsed;
         RunningControls.Visibility = running is null ? Visibility.Collapsed : Visibility.Visible;
         PauseButton.Content = running?.IsPaused == true ? "▶  Resume" : "Ⅱ  Pause";
+        PauseButton.SetResourceReference(WpfButton.BackgroundProperty, running?.IsPaused == true ? "SuccessBrush" : "WarningBrush");
+        PauseButton.SetResourceReference(WpfButton.ForegroundProperty, "ActionForegroundBrush");
         MomentumTitle.Text = running is not null && !running.IsPaused ? "MONEY MOMENTUM" : "YOUR EARNING POWER";
         MomentumIcon.Text = running is not null && !running.IsPaused ? "🔥" : "✦";
         MomentumText.Text = $"+{MoneyText.Money(_store.HourlyRate / 3600, _store.CurrencyCode, 4)}/sec";

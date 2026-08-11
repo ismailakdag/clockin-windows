@@ -4,6 +4,10 @@ namespace Clockin.Windows;
 
 public sealed record ThemePalette(string Name, string Background, string Accent, string Secondary, string Muted, string Text, string ActionForeground, string Card, string Stroke)
 {
+    public string Success => Name == "Daylight" ? "#1D985B" : "#43D98B";
+    public string Warning => Name == "Daylight" ? "#C57600" : "#FFB24A";
+    public string Danger => Name == "Daylight" ? "#C43E4B" : "#FF7270";
+
     public string FontFamily => Name switch
     {
         "Data Dense" or "Terminal Amber" => "Cascadia Mono",

@@ -28,7 +28,7 @@
         <Button x:Name="ReportsTab" Tag="4" Style="{StaticResource ProgressTabButton}" Content="Reports" Click="Tab_Click"/>
       </UniformGrid>
     </Border>
-    <ScrollViewer x:Name="ProgressScroll" Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer x:Name="ProgressScroll" Grid.Row="2" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
       <StackPanel x:Name="ProgressContent"/>
     </ScrollViewer>
   </Grid>

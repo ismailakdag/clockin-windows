@@ -22,9 +22,8 @@ public partial class App : Application
     {
         base.OnStartup(e);
         _main = new MainWindow(Store, ExchangeRates, this);
-        var trayOnly = SettingStore.Shared.GetBool("MinimalMode");
-        if (!trayOnly) { _main.Show(); _main.Activate(); }
-        else Store.SetPinned(false);
+        _main.Show();
+        _main.Activate();
 
         _tray = new NotifyIcon
         {
@@ -66,12 +65,6 @@ public partial class App : Application
         menu.Items.Add(Store.PinVisible ? "Hide pinned timer" : "Show pinned timer", null, (_, _) =>
         {
             Store.SetPinned(!Store.PinVisible);
-            RebuildTrayMenu();
-        });
-        menu.Items.Add(SettingStore.Shared.GetBool("MinimalMode") ? "Exit tray-only mode" : "Use tray-only mode", null, (_, _) =>
-        {
-            var next = !SettingStore.Shared.GetBool("MinimalMode"); SettingStore.Shared.Set("MinimalMode", next);
-            if (next) { SettingStore.Shared.Set("PinVisibleBeforeMinimal", Store.PinVisible); Store.SetPinned(false); _main?.Hide(); } else { ShowMain(); Store.SetPinned(SettingStore.Shared.GetBool("PinVisibleBeforeMinimal")); }
             RebuildTrayMenu();
         });
         menu.Items.Add(new ToolStripSeparator());
@@ -118,10 +111,8 @@ public partial class App : Application
     private void UpdateTrayPresentation()
     {
         if (!Dispatcher.CheckAccess()) { Dispatcher.BeginInvoke(UpdateTrayPresentation); return; }
-        var minimal = SettingStore.Shared.GetBool("MinimalMode");
         var status = Store.Running is null ? "Ready" : Store.Running.IsPaused ? "Paused" : "Clocked in";
-        var text = $"Clockin · {status} · {DurationText.Clock(Store.Elapsed())}";
-        if (minimal && SettingStore.Shared.GetBool("MinimalShowEarnings", true)) text += $" · {MoneyText.Money(Store.CurrentEarnings(), Store.CurrencyCode)}";
+        var text = $"Clockin · {status} · {DurationText.Clock(Store.Elapsed())} · {MoneyText.Money(Store.CurrentEarnings(), Store.CurrencyCode)}";
         if (_tray is not null) _tray.Text = text.Length > 63 ? text[..63] : text;
     }
 

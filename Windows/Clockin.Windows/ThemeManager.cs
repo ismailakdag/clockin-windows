@@ -30,6 +30,9 @@ public static class ThemeManager
         target.Resources["TextBrush"] = new SolidColorBrush(theme.Color(theme.Text));
         target.Resources["MutedBrush"] = new SolidColorBrush(theme.Color(theme.Muted));
         target.Resources["ActionForegroundBrush"] = new SolidColorBrush(theme.Color(theme.ActionForeground));
+        target.Resources["SuccessBrush"] = new SolidColorBrush(theme.Color(theme.Success));
+        target.Resources["WarningBrush"] = new SolidColorBrush(theme.Color(theme.Warning));
+        target.Resources["DangerBrush"] = new SolidColorBrush(theme.Color(theme.Danger));
         if (target is Window window)
         {
             window.FontFamily = new System.Windows.Media.FontFamily(theme.FontFamily);

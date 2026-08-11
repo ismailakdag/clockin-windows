@@ -49,19 +49,19 @@ public partial class PinnedWindow : Window
         var value = _store.CurrentEarnings(now);
         var tryText = _store.CurrencyCode == "USD" && _rates.LatestRate is { } rate ? $"≈ {MoneyText.Money(value * rate, "TRY")}" : "";
         var status = _store.Running is null ? "READY" : active ? "MONEY IS MOVING" : "PAUSED";
-        var statusColor = new SolidColorBrush(theme.Color(active ? theme.Accent : _store.Running is null ? theme.Muted : "#FF9F43"));
+        var statusColor = new SolidColorBrush(theme.Color(active ? theme.Success : _store.Running is null ? theme.Muted : theme.Warning));
 
         PinnedStatus.Text = status; PinnedElapsed.Text = DurationText.Clock(_store.Elapsed(now)); PinnedMoney.Text = MoneyText.Money(value, _store.CurrencyCode); PinnedTry.Text = tryText;
         PinnedMomentum.Text = mode == "Goal" ? $"TODAY {DurationText.Compact(_store.DurationOn(now))}  ·  MONTH {DurationText.Compact(_store.MonthDuration(now))}" : $"+{MoneyText.Money(active ? _store.HourlyRate / 3600 : 0, _store.CurrencyCode, 4)}/sec";
-        PinnedMoney.Foreground = new SolidColorBrush(theme.Color(theme.Accent)); PinnedMomentum.Foreground = new SolidColorBrush(theme.Color(theme.Accent)); PinnedStatus.Foreground = new SolidColorBrush(theme.Color(theme.Muted)); Dot.Fill = statusColor;
+        PinnedMoney.Foreground = new SolidColorBrush(theme.Color(theme.Accent)); PinnedMomentum.Foreground = new SolidColorBrush(theme.Color(theme.Accent)); PinnedStatus.Foreground = statusColor; Dot.Fill = statusColor;
 
-        CompactStatus.Text = status; CompactElapsed.Text = DurationText.Clock(_store.Elapsed(now)); CompactMoney.Text = MoneyText.Money(value, _store.CurrencyCode); CompactTry.Text = tryText; CompactDot.Fill = statusColor;
+        CompactStatus.Text = status; CompactStatus.Foreground = statusColor; CompactElapsed.Text = DurationText.Clock(_store.Elapsed(now)); CompactMoney.Text = MoneyText.Money(value, _store.CurrencyCode); CompactTry.Text = tryText; CompactDot.Fill = statusColor;
         GoalElapsed.Text = DurationText.Clock(_store.Elapsed(now));
         var dailyGoal = SettingStore.Shared.GetDouble("GoalDailyHours"); var monthGoal = SettingStore.Shared.GetDouble("GoalMonthlyHours");
         SetGoal(GoalTodayText, GoalTodayProgress, "TODAY", _store.DurationOn(now) / 3600d, dailyGoal, theme.Accent);
         SetGoal(GoalMonthText, GoalMonthProgress, "MONTH", _store.MonthDuration(now) / 3600d, monthGoal, theme.Secondary);
 
-        AllStatus.Text = status; AllElapsed.Text = DurationText.Clock(_store.Elapsed(now)); AllMoney.Text = MoneyText.Money(value, _store.CurrencyCode); AllTry.Text = tryText; AllPerSecond.Text = $"+{MoneyText.Money(active ? _store.HourlyRate / 3600 : 0, _store.CurrencyCode, 4)}/sec"; AllDot.Fill = statusColor;
+        AllStatus.Text = status; AllStatus.Foreground = statusColor; AllElapsed.Text = DurationText.Clock(_store.Elapsed(now)); AllMoney.Text = MoneyText.Money(value, _store.CurrencyCode); AllTry.Text = tryText; AllPerSecond.Text = $"+{MoneyText.Money(active ? _store.HourlyRate / 3600 : 0, _store.CurrencyCode, 4)}/sec"; AllDot.Fill = statusColor;
         var averages = AllTimeAverages(now); AllAvgDay.Text = DurationText.Hours(averages.day); AllAvgWeek.Text = DurationText.Hours(averages.week); AllAvgMonth.Text = DurationText.Hours(averages.month);
         AllGoalsPanel.Children.Clear();
         if (dailyGoal > 0) AllGoalsPanel.Children.Add(GoalRow("DAY", _store.DurationOn(now) / 3600d, dailyGoal, theme.Accent));
