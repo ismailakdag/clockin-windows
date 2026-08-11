@@ -53,6 +53,7 @@ public partial class ProgressWindow : Window
             case 4: RenderReports(snapshot); break;
             default: RenderOverview(snapshot); break;
         }
+        ThemeManager.ApplyTextScale(this, _settings);
     }
 
     private void UpdateTabButtons()

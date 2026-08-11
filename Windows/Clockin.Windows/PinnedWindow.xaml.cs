@@ -43,7 +43,6 @@ public partial class PinnedWindow : Window
         var now = DateTime.Now;
         var mode = SettingStore.Shared.Get("PinnedMode", "Money");
         ApplyMode(mode);
-        ApplyTextScale();
         var theme = ThemePalette.For(SettingStore.Shared.Get("Theme", "Carbon"));
         var active = _store.Running?.IsPaused == false;
         var value = _store.CurrentEarnings(now);
@@ -67,6 +66,7 @@ public partial class PinnedWindow : Window
         if (dailyGoal > 0) AllGoalsPanel.Children.Add(GoalRow("DAY", _store.DurationOn(now) / 3600d, dailyGoal, theme.Accent));
         if (monthGoal > 0) AllGoalsPanel.Children.Add(GoalRow("MONTH", _store.MonthDuration(now) / 3600d, monthGoal, theme.Secondary));
         AllRadioIcon.Foreground = new SolidColorBrush(theme.Color(RadioPlayer.Shared.IsPlaying ? theme.Accent : theme.Muted)); AllRadioText.Text = RadioPlayer.Shared.IsPlaying ? "FOCUS RADIO ON" : "FOCUS RADIO OFF"; AllRadioButton.Content = RadioPlayer.Shared.IsPlaying ? "■" : "▶"; AllRadioVolume.Value = RadioPlayer.Shared.Volume;
+        ApplyTextScale();
     }
 
     private void ApplyMode(string mode)
@@ -97,13 +97,7 @@ public partial class PinnedWindow : Window
 
     private void ApplyTextScale()
     {
-        var scale = FontScale;
-        PinnedStatus.FontSize = 8 * scale; PinnedElapsed.FontSize = 16 * scale; PinnedMoney.FontSize = 22 * scale; PinnedTry.FontSize = 14 * scale; PinnedMomentum.FontSize = 8 * scale;
-        CompactStatus.FontSize = 9 * scale; CompactElapsed.FontSize = 23 * scale; CompactMoney.FontSize = 13 * scale; CompactTry.FontSize = 9 * scale;
-        GoalElapsed.FontSize = 14 * scale; GoalTodayText.FontSize = 9 * scale; GoalMonthText.FontSize = 9 * scale;
-        AllStatus.FontSize = 8 * scale; AllElapsed.FontSize = 16 * scale; AllMoney.FontSize = 23 * scale; AllTry.FontSize = 14 * scale; AllPerSecond.FontSize = 8 * scale;
-        AllAvgDay.FontSize = 9 * scale; AllAvgWeek.FontSize = 9 * scale; AllAvgMonth.FontSize = 9 * scale;
-        AllRadioIcon.FontSize = 13 * scale; AllRadioText.FontSize = 8 * scale; AllRadioButton.FontSize = 12 * scale;
+        ThemeManager.ApplyTextScale(this, FontScale);
     }
 
     private void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -155,9 +149,8 @@ public partial class PinnedWindow : Window
 
     private Border GoalRow(string name, double value, double goal, string color)
     {
-        var scale = FontScale;
         var stack = new StackPanel { Margin = new Thickness(0, 5, 0, 0) };
-        var row = new DockPanel(); row.Children.Add(new TextBlock { Text = name, FontSize = 8 * scale, Foreground = (System.Windows.Media.Brush)FindResource("MutedBrush") }); var valueText = new TextBlock { Text = $"{DurationText.Hours(value)} / {DurationText.Hours(goal)}", FontSize = 8 * scale, HorizontalAlignment = System.Windows.HorizontalAlignment.Right }; DockPanel.SetDock(valueText, Dock.Right); row.Children.Add(valueText); stack.Children.Add(row);
+        var row = new DockPanel(); row.Children.Add(new TextBlock { Text = name, FontSize = 8, Foreground = (System.Windows.Media.Brush)FindResource("MutedBrush") }); var valueText = new TextBlock { Text = $"{DurationText.Hours(value)} / {DurationText.Hours(goal)}", FontSize = 8, HorizontalAlignment = System.Windows.HorizontalAlignment.Right }; DockPanel.SetDock(valueText, Dock.Right); row.Children.Add(valueText); stack.Children.Add(row);
         var bar = new System.Windows.Controls.ProgressBar { Height = 5, Maximum = 1, Value = Math.Min(1, Math.Max(0, value / goal)), Foreground = new SolidColorBrush(ThemePalette.For(SettingStore.Shared.Get("Theme", "Carbon")).Color(color)), Background = (System.Windows.Media.Brush)FindResource("CardStrokeBrush"), Margin = new Thickness(0, 3, 0, 0) }; stack.Children.Add(bar);
         return new Border { Child = stack, Margin = new Thickness(0, 0, 0, 4) };
     }

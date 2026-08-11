@@ -69,6 +69,7 @@ public partial class HeatmapWindow : Window
         BuildLegend();
         HeatmapHost.Children.Clear();
         if (_range == "All") BuildDailyGrid(firstDay, today, daily); else BuildAggregate(start, today, _range == "Week" ? TimeSpan.FromDays(7) : null, daily);
+        ThemeManager.ApplyTextScale(this, _settings);
     }
 
     private Dictionary<DateTime, DayStat> DailyStats(DateTime first, DateTime last)

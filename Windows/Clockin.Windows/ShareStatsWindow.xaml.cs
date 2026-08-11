@@ -35,6 +35,7 @@ public partial class ShareStatsWindow : Window
         PageText.Text = _allPages ? "ALL 3 PAGES · STATS REWIND" : $"PAGE {_page + 1} / 3 · {new[] { "OVERVIEW", "RHYTHM", "MILESTONES" }[_page]}";
         ShareContent.Children.Clear();
         if (_allPages) { for (var page = 0; page < 3; page++) AddPage(snapshot, page); } else AddPage(snapshot, _page);
+        ThemeManager.ApplyTextScale(this, _settings);
     }
 
     private void AddPage(ProgressSnapshot snapshot, int page)

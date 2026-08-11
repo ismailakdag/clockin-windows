@@ -69,13 +69,7 @@ public partial class MainWindow : Window
 
     private void ApplyTextScale()
     {
-        var scale = ThemeManager.TextScale(_settings);
-        StatusText.FontSize = 10 * scale; ElapsedText.FontSize = 48 * scale; EarningsText.FontSize = 18 * scale; TryText.FontSize = 11 * scale;
-        MomentumIcon.FontSize = 15 * scale; MomentumTitle.FontSize = 8 * scale; MomentumText.FontSize = 10 * scale; MilestoneText.FontSize = 8 * scale; MilestoneRemaining.FontSize = 9 * scale;
-        ClockInButton.FontSize = 13 * scale; PauseButton.FontSize = 10 * scale; MascotMessage.FontSize = 11 * scale;
-        TodayHours.FontSize = 14 * scale; TodayEarned.FontSize = 13 * scale; TodayTry.FontSize = 9 * scale; AllHours.FontSize = 14 * scale; AllEarned.FontSize = 9 * scale;
-        GoalHint.FontSize = 9 * scale; GoalText.FontSize = 10 * scale; RateText.FontSize = 13 * scale; RateStatus.FontSize = 9 * scale; RateDate.FontSize = 9 * scale; FooterText.FontSize = 9 * scale; ProgressButton.FontSize = 13 * scale;
-        if (_clearLatestButton is not null) _clearLatestButton.FontSize = 10 * scale;
+        ThemeManager.ApplyTextScale(this, _settings);
     }
 
     public void RefreshFromStore()
@@ -116,18 +110,18 @@ public partial class MainWindow : Window
         var mascotEnabled = _settings.GetBool("MascotEnabled", true); MascotImage.Visibility = mascotEnabled ? Visibility.Visible : Visibility.Collapsed; MascotEffectText.Visibility = mascotEnabled ? Visibility.Visible : Visibility.Collapsed; SetMascotMessage(mascotEnabled ? message : "Mascot is disabled in Settings");
         RecentPanel.Children.Clear();
         foreach (var session in _store.Sessions.Take(4)) AddSessionRow(session);
+        ApplyTextScale();
         if (mascotEnabled) UpdateMascotMode();
     }
 
     private void AddSessionRow(WorkSession session)
     {
         var theme = Theme;
-        var scale = ThemeManager.TextScale(_settings);
         var row = new Border { Background = new SolidColorBrush(theme.Color(theme.Card)), BorderBrush = new SolidColorBrush(theme.Color(theme.Stroke)), BorderThickness = new Thickness(0, 0, 0, 1), Padding = new Thickness(10, 9, 10, 9) };
         var grid = new Grid(); grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(30) }); grid.ColumnDefinitions.Add(new ColumnDefinition()); grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         var sourceIcon = new Border { Background = new SolidColorBrush(theme.Color(theme.Background)), CornerRadius = new CornerRadius(8), Width = 27, Height = 27, Child = new TextBlock { Text = session.Source == "Clockin" ? "ϟ" : "↓", FontSize = 15, Foreground = new SolidColorBrush(theme.Color(session.Source == "Clockin" ? theme.Accent : theme.Secondary)), HorizontalAlignment = System.Windows.HorizontalAlignment.Center, VerticalAlignment = System.Windows.VerticalAlignment.Center } };
-        var info = new StackPanel { Margin = new Thickness(10, 0, 0, 0) }; info.Children.Add(new TextBlock { Text = session.Start.ToString("MMM d · HH:mm"), FontSize = 12 * scale, Foreground = new SolidColorBrush(theme.Color(theme.Text)) }); info.Children.Add(new TextBlock { Text = string.IsNullOrWhiteSpace(session.Note) ? session.Source : session.Note, FontSize = 9 * scale, Foreground = new SolidColorBrush(theme.Color(theme.Muted)), TextTrimming = TextTrimming.CharacterEllipsis });
-        var money = new StackPanel { HorizontalAlignment = System.Windows.HorizontalAlignment.Right }; money.Children.Add(new TextBlock { Text = DurationText.Compact(session.Duration), FontSize = 12 * scale, HorizontalAlignment = System.Windows.HorizontalAlignment.Right }); money.Children.Add(new TextBlock { Text = MoneyText.Money(_store.Earnings(session), _store.CurrencyCode), FontSize = 10 * scale, Foreground = new SolidColorBrush(theme.Color(theme.Accent)), HorizontalAlignment = System.Windows.HorizontalAlignment.Right });
+        var info = new StackPanel { Margin = new Thickness(10, 0, 0, 0) }; info.Children.Add(new TextBlock { Text = session.Start.ToString("MMM d · HH:mm"), FontSize = 12, Foreground = new SolidColorBrush(theme.Color(theme.Text)) }); info.Children.Add(new TextBlock { Text = string.IsNullOrWhiteSpace(session.Note) ? session.Source : session.Note, FontSize = 9, Foreground = new SolidColorBrush(theme.Color(theme.Muted)), TextTrimming = TextTrimming.CharacterEllipsis });
+        var money = new StackPanel { HorizontalAlignment = System.Windows.HorizontalAlignment.Right }; money.Children.Add(new TextBlock { Text = DurationText.Compact(session.Duration), FontSize = 12, HorizontalAlignment = System.Windows.HorizontalAlignment.Right }); money.Children.Add(new TextBlock { Text = MoneyText.Money(_store.Earnings(session), _store.CurrencyCode), FontSize = 10, Foreground = new SolidColorBrush(theme.Color(theme.Accent)), HorizontalAlignment = System.Windows.HorizontalAlignment.Right });
         Grid.SetColumn(sourceIcon, 0); Grid.SetColumn(info, 1); Grid.SetColumn(money, 2); grid.Children.Add(sourceIcon); grid.Children.Add(info); grid.Children.Add(money); row.Child = grid; RecentPanel.Children.Add(row);
     }
 

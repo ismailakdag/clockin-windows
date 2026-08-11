@@ -31,6 +31,7 @@ public partial class GuideWindow : Window
             GuideContent.Children.Add(new Border { Child = grid, Background = Brush("CardBrush"), BorderBrush = Brush("CardStrokeBrush"), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(11), Padding = new Thickness(11), Margin = new Thickness(0, 0, 0, 10) });
         }
         GuideContent.Children.Add(new Border { Child = Text("Tip: import the oldest history first, check the comparison totals, then add newer exports. This makes rate periods and duplicate matching easier to audit.", 10, "AccentBrush", FontWeights.SemiBold), Background = Brush("CardBrush"), CornerRadius = new CornerRadius(11), Padding = new Thickness(12) });
+        ThemeManager.ApplyTextScale(this, SettingStore.Shared);
     }
 
     private TextBlock Text(string value, double size, string color, FontWeight? weight = null) => new() { Text = value, FontSize = size, Foreground = Brush(color), FontWeight = weight ?? FontWeights.Normal, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 2, 0, 2) };

@@ -4,7 +4,7 @@ public partial class RateScheduleWindow : Window
 {
     private readonly ClockStore _store;
     public RateScheduleWindow(ClockStore store) { InitializeComponent(); _store = store; CustomChrome.Attach(this, "RATE SCHEDULE", SettingStore.Shared); Refresh(); }
-    private void Refresh() => Rules.ItemsSource = _store.RateRules.ToList();
+    private void Refresh() { Rules.ItemsSource = _store.RateRules.ToList(); ThemeManager.ApplyTextScale(this, SettingStore.Shared); }
     private void Add_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new RateRuleInputWindow { Owner = this }; if (dialog.ShowDialog() != true) return;

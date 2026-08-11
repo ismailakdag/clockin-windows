@@ -63,6 +63,7 @@ public partial class HistoryWindow : Window
         if (sessions.Count == 0) HistoryContent.Children.Add(Card(Text("No earnings in this period.", 11, "MutedBrush"), 12));
         foreach (var session in sessions.Take(100)) HistoryContent.Children.Add(SessionRow(session));
         TotalText.Text = $"{_range} · {DurationText.Compact(totalDuration)} · {MoneyText.Money(totalEarnings, _store.CurrencyCode)}";
+        ThemeManager.ApplyTextScale(this, _settings);
     }
 
     private Dictionary<DateTime, DayPoint> BuildDailyPoints(IEnumerable<WorkSession> sessions, bool includeRunning)
