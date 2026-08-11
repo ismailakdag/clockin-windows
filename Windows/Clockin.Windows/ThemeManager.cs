@@ -5,6 +5,20 @@ namespace Clockin.Windows;
 
 public static class ThemeManager
 {
+    public static double TextScale(SettingStore settings) => settings.Get("TextSize", settings.Get("PinnedFontSize", "Comfortable")) switch
+    {
+        "Small" => 0.94,
+        "Large" => 1.12,
+        _ => 1.0
+    };
+
+    public static double PinnedTextScale(SettingStore settings) => settings.Get("TextSize", settings.Get("PinnedFontSize", "Comfortable")) switch
+    {
+        "Small" => 0.94,
+        "Large" => 1.24,
+        _ => 1.12
+    };
+
     public static void Apply(FrameworkElement target, SettingStore settings)
     {
         var theme = ThemePalette.For(settings.Get("Theme", "Carbon"));
@@ -19,6 +33,7 @@ public static class ThemeManager
         if (target is Window window)
         {
             window.FontFamily = new System.Windows.Media.FontFamily(theme.FontFamily);
+            window.FontSize = 12 * TextScale(settings);
             window.Background = window.AllowsTransparency ? System.Windows.Media.Brushes.Transparent : (System.Windows.Media.Brush)target.Resources["WindowBackgroundBrush"];
             window.Foreground = (System.Windows.Media.Brush)target.Resources["TextBrush"];
         }

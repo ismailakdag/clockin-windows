@@ -93,12 +93,7 @@ public partial class PinnedWindow : Window
         }
     }
 
-    private double FontScale => SettingStore.Shared.Get("PinnedFontSize", "Comfortable") switch
-    {
-        "Small" => 0.94,
-        "Large" => 1.24,
-        _ => 1.12
-    };
+    private double FontScale => ThemeManager.PinnedTextScale(SettingStore.Shared);
 
     private void ApplyTextScale()
     {
