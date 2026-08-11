@@ -4,6 +4,10 @@
         Width="320" Height="112" MinWidth="246" MinHeight="72" MaxWidth="640" MaxHeight="500"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent" Topmost="True" ShowInTaskbar="False" ResizeMode="CanResize" MouseLeftButtonDown="DragWindow">
   <Window.Resources>
+    <Style x:Key="PinnedIconButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="Width" Value="28"/><Setter Property="Height" Value="26"/><Setter Property="Padding" Value="0"/><Setter Property="Margin" Value="0"/>
+      <Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="FontSize" Value="12"/>
+    </Style>
     <Style x:Key="ResizeThumb" TargetType="Thumb">
       <Setter Property="Background" Value="Transparent"/>
       <Setter Property="Template">
@@ -13,7 +17,8 @@
       </Setter>
     </Style>
   </Window.Resources>
-  <Border x:Name="PinnedShell" Background="{DynamicResource CardBrush}" Opacity="0.96" CornerRadius="18" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" Padding="15">
+  <Border x:Name="PinnedShell" Background="{DynamicResource CardBrush}" Opacity="0.98" CornerRadius="18" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" Padding="15">
+    <Border.Effect><DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.32" Color="#000000"/></Border.Effect>
     <Grid>
       <Grid x:Name="CompactView" Visibility="Collapsed">
         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
@@ -33,14 +38,20 @@
         <StackPanel Grid.Row="1" Margin="0,7,0,0"><DockPanel><TextBlock Text="TODAY" FontSize="8" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="GoalTodayText" Text="0m / 0m" FontSize="9" HorizontalAlignment="Right" DockPanel.Dock="Right"/></DockPanel><ProgressBar x:Name="GoalTodayProgress" Height="5" Maximum="1" Margin="0,3,0,6" Foreground="{DynamicResource AccentBrush}" Background="{DynamicResource CardStrokeBrush}"/></StackPanel>
         <StackPanel Grid.Row="2"><DockPanel><TextBlock Text="MONTH" FontSize="8" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="GoalMonthText" Text="0m / 0m" FontSize="9" HorizontalAlignment="Right" DockPanel.Dock="Right"/></DockPanel><ProgressBar x:Name="GoalMonthProgress" Height="5" Maximum="1" Margin="0,3,0,0" Foreground="{DynamicResource SecondaryAccentBrush}" Background="{DynamicResource CardStrokeBrush}"/></StackPanel>
       </Grid>
-      <ScrollViewer x:Name="AllView" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" MaxHeight="470">
+      <ScrollViewer x:Name="AllView" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="470">
         <StackPanel>
           <DockPanel><StackPanel Orientation="Horizontal"><Ellipse x:Name="AllDot" Width="7" Height="7" Fill="{DynamicResource MutedBrush}" Margin="0,0,6,0" VerticalAlignment="Center"/><TextBlock x:Name="AllStatus" Text="READY" FontSize="8" FontWeight="Black" Foreground="{DynamicResource MutedBrush}"/></StackPanel><TextBlock x:Name="AllElapsed" Text="00:00:00" FontFamily="Cascadia Mono" FontSize="16" HorizontalAlignment="Right" DockPanel.Dock="Right"/></DockPanel>
           <DockPanel Margin="0,7,0,0"><TextBlock x:Name="AllMoney" Text="$0.00" FontSize="23" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/><TextBlock x:Name="AllTry" Text="≈ ₺0.00" FontSize="14" HorizontalAlignment="Right" DockPanel.Dock="Right"/></DockPanel>
           <TextBlock x:Name="AllPerSecond" Text="+$0.0069/sec" FontFamily="Cascadia Mono" FontSize="8" Foreground="{DynamicResource AccentBrush}" Margin="0,7,0,8"/>
           <UniformGrid Columns="3" Margin="0,0,0,8"><Border Background="{DynamicResource BlackOverlayBrush}" CornerRadius="7" Padding="6" Margin="2"><StackPanel><TextBlock Text="AVG DAY" FontSize="7" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="AllAvgDay" FontSize="9" FontFamily="Cascadia Mono"/></StackPanel></Border><Border Background="{DynamicResource BlackOverlayBrush}" CornerRadius="7" Padding="6" Margin="2"><StackPanel><TextBlock Text="AVG WEEK" FontSize="7" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="AllAvgWeek" FontSize="9" FontFamily="Cascadia Mono"/></StackPanel></Border><Border Background="{DynamicResource BlackOverlayBrush}" CornerRadius="7" Padding="6" Margin="2"><StackPanel><TextBlock Text="AVG MONTH" FontSize="7" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="AllAvgMonth" FontSize="9" FontFamily="Cascadia Mono"/></StackPanel></Border></UniformGrid>
           <StackPanel x:Name="AllGoalsPanel"/>
-          <DockPanel Margin="0,8,0,0"><TextBlock x:Name="AllRadioIcon" Text="♫" FontSize="13" Foreground="{DynamicResource MutedBrush}" Margin="0,0,6,0"/><TextBlock x:Name="AllRadioText" Text="FOCUS RADIO OFF" FontSize="8" FontWeight="Bold"/><Button x:Name="AllRadioButton" Content="▶" Width="26" Height="24" Padding="0" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="Radio_Click"/><Slider x:Name="AllRadioVolume" Width="65" Minimum="0" Maximum="1" Margin="8,0,0,0" HorizontalAlignment="Right" DockPanel.Dock="Right" ValueChanged="RadioVolume_Changed"/></DockPanel>
+          <Grid Margin="0,8,0,0" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="65"/><ColumnDefinition Width="28"/></Grid.ColumnDefinitions>
+            <TextBlock x:Name="AllRadioIcon" Text="♫" FontSize="13" Foreground="{DynamicResource MutedBrush}" Margin="0,0,6,0" VerticalAlignment="Center"/>
+            <TextBlock x:Name="AllRadioText" Grid.Column="1" Text="FOCUS RADIO OFF" FontSize="8" FontWeight="Bold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+            <Slider x:Name="AllRadioVolume" Grid.Column="2" Width="65" Minimum="0" Maximum="1" VerticalAlignment="Center" ValueChanged="RadioVolume_Changed"/>
+            <Button x:Name="AllRadioButton" Grid.Column="3" Style="{StaticResource PinnedIconButton}" Content="▶" Click="Radio_Click"/>
+          </Grid>
         </StackPanel>
       </ScrollViewer>
       <TextBlock Text="↘" FontSize="10" Foreground="{DynamicResource MutedBrush}" Opacity="0.35" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,2,1" IsHitTestVisible="False" Panel.ZIndex="20"/>

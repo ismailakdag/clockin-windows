@@ -72,7 +72,7 @@ public partial class ProgressWindow : Window
         level.ColumnDefinitions.Add(new ColumnDefinition());
         level.Children.Add(new TextBlock { Text = Avatar(snapshot.Level), FontSize = 48, HorizontalAlignment = System.Windows.HorizontalAlignment.Center, VerticalAlignment = System.Windows.VerticalAlignment.Center });
         var levelInfo = new StackPanel { Margin = new Thickness(12, 0, 0, 0) };
-        levelInfo.Children.Add(Text($"LEVEL {snapshot.Level}", 21, "AccentBrush", FontWeights.Black));
+        levelInfo.Children.Add(Text($"LEVEL {snapshot.Level}", 24, "AccentBrush", FontWeights.Black));
         levelInfo.Children.Add(Text($"{snapshot.Xp:N0} XP  ·  {500 - snapshot.Xp % 500:N0} XP to next level", 10, "MutedBrush"));
         var progress = new WpfProgressBar { Height = 8, Maximum = 1, Value = snapshot.LevelProgress, Margin = new Thickness(0, 9, 0, 0), Foreground = Brush("AccentBrush"), Background = Brush("CardStrokeBrush") };
         levelInfo.Children.Add(progress);

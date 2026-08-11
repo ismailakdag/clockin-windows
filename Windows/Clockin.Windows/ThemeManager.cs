@@ -16,6 +16,11 @@ public static class ThemeManager
         target.Resources["TextBrush"] = new SolidColorBrush(theme.Color(theme.Text));
         target.Resources["MutedBrush"] = new SolidColorBrush(theme.Color(theme.Muted));
         target.Resources["ActionForegroundBrush"] = new SolidColorBrush(theme.Color(theme.ActionForeground));
-        if (target is Window window) { window.FontFamily = new System.Windows.Media.FontFamily(theme.FontFamily); window.Background = (System.Windows.Media.Brush)target.Resources["WindowBackgroundBrush"]; window.Foreground = (System.Windows.Media.Brush)target.Resources["TextBrush"]; }
+        if (target is Window window)
+        {
+            window.FontFamily = new System.Windows.Media.FontFamily(theme.FontFamily);
+            window.Background = window.AllowsTransparency ? System.Windows.Media.Brushes.Transparent : (System.Windows.Media.Brush)target.Resources["WindowBackgroundBrush"];
+            window.Foreground = (System.Windows.Media.Brush)target.Resources["TextBrush"];
+        }
     }
 }

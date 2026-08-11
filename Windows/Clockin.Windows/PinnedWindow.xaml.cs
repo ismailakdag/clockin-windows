@@ -20,9 +20,22 @@ public partial class PinnedWindow : Window
         _store = store;
         _rates = rates;
         ThemeManager.Apply(this, SettingStore.Shared);
+        SettingStore.Shared.Changed += SettingsChanged;
         _timer.Tick += (_, _) => Refresh();
         _timer.Start();
+        Closed += (_, _) =>
+        {
+            SettingStore.Shared.Changed -= SettingsChanged;
+            _timer.Stop();
+        };
         Loaded += (_, _) => { if (double.IsNaN(Left) || double.IsNaN(Top) || (Left == 0 && Top == 0)) { Left = SystemParameters.WorkArea.Right - Width - 25; Top = SystemParameters.WorkArea.Top + 35; } ClampToWorkArea(); Refresh(); };
+    }
+
+    private void SettingsChanged(object? sender, EventArgs e)
+    {
+        if (!Dispatcher.CheckAccess()) { Dispatcher.BeginInvoke(() => SettingsChanged(sender, e)); return; }
+        ThemeManager.Apply(this, SettingStore.Shared);
+        Refresh();
     }
 
     private void Refresh()
@@ -67,7 +80,8 @@ public partial class PinnedWindow : Window
         MoneyView.Visibility = mode == "Money" ? Visibility.Visible : Visibility.Collapsed;
         GoalView.Visibility = mode == "Goal" ? Visibility.Visible : Visibility.Collapsed;
         AllView.Visibility = mode == "All" ? Visibility.Visible : Visibility.Collapsed;
-        var defaults = mode switch { "Compact" => (246d, 72d), "Goal" => (300d, 116d), "All" => (370d, 230d), _ => (320d, 112d) };
+        var allHeight = SettingStore.Shared.GetDouble("GoalDailyHours") > 0 || SettingStore.Shared.GetDouble("GoalMonthlyHours") > 0 ? 230d : 190d;
+        var defaults = mode switch { "Compact" => (246d, 72d), "Goal" => (300d, 116d), "All" => (370d, allHeight), _ => (320d, 112d) };
         Width = Math.Clamp(SettingStore.Shared.GetDouble($"PinnedWidth.{mode}", defaults.Item1), MinWidth, MaxWidth);
         Height = Math.Clamp(SettingStore.Shared.GetDouble($"PinnedHeight.{mode}", defaults.Item2), MinHeight, MaxHeight);
         if (IsLoaded && !double.IsNaN(oldRight) && !double.IsNaN(oldBottom))

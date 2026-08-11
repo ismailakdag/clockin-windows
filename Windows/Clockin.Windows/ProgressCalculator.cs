@@ -53,7 +53,8 @@ public static class ProgressCalculator
         var goalBonus = goalDays * 100 + doubleGoalDays * 250 + monthlyGoalDays * 500;
         var streakBonus = new[] { (3, 100), (7, 250), (14, 500), (30, 1_000), (60, 2_000) }.Where(item => longestStreak >= item.Item1).Sum(item => item.Item2);
         var baseXp = totalHours * 100;
-        var xp = Math.Max(0L, (long)Math.Round(baseXp)) + goalBonus + streakBonus;
+        // Match the Mac implementation: Int(totalHours * 100) truncates fractional XP.
+        var xp = Math.Max(0L, (long)baseXp) + goalBonus + streakBonus;
         var level = (int)Math.Clamp(xp / 500 + 1, 1, int.MaxValue);
 
         var completed = store.Sessions.ToList();

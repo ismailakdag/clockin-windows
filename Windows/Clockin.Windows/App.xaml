@@ -50,15 +50,16 @@
             <Grid>
               <Border x:Name="ComboBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
                 <Grid>
-                  <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"/>
-                  <ToggleButton x:Name="DropDownToggle" Width="30" HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Focusable="False" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                  <ToggleButton x:Name="DropDownToggle" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="Transparent" BorderThickness="0" Padding="{TemplateBinding Padding}" Focusable="False" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}">
                     <ToggleButton.Template>
                       <ControlTemplate TargetType="ToggleButton">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"><ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/></Border>
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"><Grid>
+                          <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Left" VerticalAlignment="Center" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                          <Path Data="M 0 0 L 4 4 L 8 0" Stroke="{DynamicResource MutedBrush}" StrokeThickness="1.6" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,11,0"/>
+                        </Grid></Border>
                         <ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter Property="Opacity" Value="0.72"/></Trigger><Trigger Property="IsPressed" Value="True"><Setter Property="Opacity" Value="0.5"/></Trigger></ControlTemplate.Triggers>
                       </ControlTemplate>
                     </ToggleButton.Template>
-                    <Path Data="M 0 0 L 4 4 L 8 0" Stroke="{DynamicResource MutedBrush}" StrokeThickness="1.6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                   </ToggleButton>
                 </Grid>
               </Border>
@@ -103,14 +104,29 @@
     <Style TargetType="ListView"><Setter Property="Background" Value="{DynamicResource CardBrush}"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource CardStrokeBrush}"/><Setter Property="BorderThickness" Value="1"/></Style>
     <Style TargetType="ListViewItem"><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="Padding" Value="8,6"/><Style.Triggers><Trigger Property="IsSelected" Value="True"><Setter Property="Background" Value="{DynamicResource CardStrokeBrush}"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/></Trigger><Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource CardStrokeBrush}"/></Trigger></Style.Triggers></Style>
     <Style TargetType="GridViewColumnHeader"><Setter Property="Background" Value="{DynamicResource CardBrush}"/><Setter Property="Foreground" Value="{DynamicResource MutedBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource CardStrokeBrush}"/><Setter Property="Padding" Value="8,6"/></Style>
+    <Style x:Key="SliderThumb" TargetType="Thumb">
+      <Setter Property="Width" Value="13"/><Setter Property="Height" Value="13"/><Setter Property="Background" Value="{DynamicResource AccentBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource TextBrush}"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Thumb"><Ellipse Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"/></ControlTemplate></Setter.Value></Setter>
+    </Style>
+    <Style TargetType="Slider">
+      <Setter Property="Height" Value="18"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/><Setter Property="Background" Value="{DynamicResource CardStrokeBrush}"/>
+      <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Slider"><Grid>
+        <Border Height="4" Background="{TemplateBinding Background}" CornerRadius="2" VerticalAlignment="Center"/>
+        <Track x:Name="PART_Track" Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value}" IsDirectionReversed="{TemplateBinding IsDirectionReversed}" VerticalAlignment="Center">
+          <Track.DecreaseRepeatButton><RepeatButton Command="{x:Static Slider.DecreaseLarge}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Background="{TemplateBinding Foreground}" BorderThickness="0"/></Track.DecreaseRepeatButton>
+          <Track.Thumb><Thumb Style="{StaticResource SliderThumb}"/></Track.Thumb>
+          <Track.IncreaseRepeatButton><RepeatButton Command="{x:Static Slider.IncreaseLarge}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Background="Transparent" BorderThickness="0"/></Track.IncreaseRepeatButton>
+        </Track>
+      </Grid></ControlTemplate></Setter.Value></Setter>
+    </Style>
     <Style TargetType="ScrollViewer"><Setter Property="Background" Value="Transparent"/></Style>
     <Style x:Key="ScrollBarThumb" TargetType="Thumb">
-      <Setter Property="Background" Value="{DynamicResource CardStrokeBrush}"/>
-      <Setter Property="Opacity" Value="0.9"/>
+      <Setter Property="Background" Value="{DynamicResource MutedBrush}"/>
+      <Setter Property="Opacity" Value="0.58"/>
       <Setter Property="Template">
-        <Setter.Value><ControlTemplate TargetType="Thumb"><Border Background="{TemplateBinding Background}" CornerRadius="5"/></ControlTemplate></Setter.Value>
+        <Setter.Value><ControlTemplate TargetType="Thumb"><Border Background="{TemplateBinding Background}" CornerRadius="5" Margin="1"/></ControlTemplate></Setter.Value>
       </Setter>
-      <Style.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource AccentBrush}"/><Setter Property="Opacity" Value="1"/></Trigger></Style.Triggers>
+      <Style.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="{DynamicResource CardStrokeBrush}"/><Setter Property="Opacity" Value="1"/></Trigger><Trigger Property="IsDragging" Value="True"><Setter Property="Background" Value="{DynamicResource AccentBrush}"/><Setter Property="Opacity" Value="0.9"/></Trigger></Style.Triggers>
     </Style>
     <Style TargetType="ScrollBar">
       <Setter Property="Background" Value="Transparent"/>
@@ -121,7 +137,7 @@
         <Setter.Value>
           <ControlTemplate TargetType="ScrollBar">
             <Grid Background="Transparent">
-              <Track x:Name="PART_Track" Orientation="{TemplateBinding Orientation}" Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value}" ViewportSize="{TemplateBinding ViewportSize}">
+              <Track x:Name="PART_Track" Width="7" HorizontalAlignment="Center" Orientation="{TemplateBinding Orientation}" Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}" Value="{TemplateBinding Value}" ViewportSize="{TemplateBinding ViewportSize}">
                 <Track.DecreaseRepeatButton><RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Background="Transparent" BorderThickness="0"/></Track.DecreaseRepeatButton>
                 <Track.Thumb>
                   <Thumb Style="{StaticResource ScrollBarThumb}"/>
@@ -130,7 +146,7 @@
               </Track>
             </Grid>
             <ControlTemplate.Triggers>
-              <Trigger Property="Orientation" Value="Horizontal"><Setter Property="Width" Value="Auto"/><Setter Property="Height" Value="9"/></Trigger>
+              <Trigger Property="Orientation" Value="Horizontal"><Setter Property="Width" Value="Auto"/><Setter Property="Height" Value="9"/><Setter TargetName="PART_Track" Property="Width" Value="Auto"/><Setter TargetName="PART_Track" Property="Height" Value="7"/><Setter TargetName="PART_Track" Property="HorizontalAlignment" Value="Stretch"/><Setter TargetName="PART_Track" Property="VerticalAlignment" Value="Center"/></Trigger>
               <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0"/></Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>

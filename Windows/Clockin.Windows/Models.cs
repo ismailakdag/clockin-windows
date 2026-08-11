@@ -130,6 +130,7 @@ public sealed class SettingStore
     public static SettingStore Shared { get; } = new();
     private static readonly string Path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Clockin", "settings.json");
     private readonly Dictionary<string, string> _values = [];
+    public event EventHandler? Changed;
     public SettingStore()
     {
         try { if (File.Exists(Path)) _values = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(Path)) ?? []; } catch { }
@@ -137,7 +138,13 @@ public sealed class SettingStore
     public string Get(string key, string fallback = "") => _values.TryGetValue(key, out var value) ? value : fallback;
     public bool GetBool(string key, bool fallback = false) => bool.TryParse(Get(key), out var value) ? value : fallback;
     public double GetDouble(string key, double fallback = 0) => double.TryParse(Get(key), NumberStyles.Float, CultureInfo.InvariantCulture, out var value) ? value : fallback;
-    public void Set(string key, string value) { _values[key] = value; Save(); }
+    public void Set(string key, string value)
+    {
+        if (_values.TryGetValue(key, out var current) && string.Equals(current, value, StringComparison.Ordinal)) return;
+        _values[key] = value;
+        Save();
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
     public void Set(string key, bool value) => Set(key, value.ToString());
     public void Set(string key, double value) => Set(key, value.ToString(CultureInfo.InvariantCulture));
     private void Save()
