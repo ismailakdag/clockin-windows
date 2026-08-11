@@ -1,9 +1,8 @@
-.DS_Store
-.build/
 dist/
-*.xcuserstate
-DerivedData/
-*.swp
-Resources/Mascot/
 **/bin/
 **/obj/
+.vs/
+*.user
+*.suo
+*.swp
+.DS_Store

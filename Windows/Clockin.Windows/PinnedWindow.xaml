@@ -18,7 +18,6 @@
     </Style>
   </Window.Resources>
   <Border x:Name="PinnedShell" Background="{DynamicResource CardBrush}" Opacity="0.98" CornerRadius="18" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" Padding="15">
-    <Border.Effect><DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.32" Color="#000000"/></Border.Effect>
     <Grid>
       <Grid x:Name="CompactView" Visibility="Collapsed">
         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>

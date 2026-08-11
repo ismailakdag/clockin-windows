@@ -20,6 +20,8 @@ The self-contained executable is written to `dist\windows\Clockin.exe`.
 - `Ctrl+Alt+O`: clock out
 - `Ctrl+Alt+E`: show the main window
 - Tray close behavior matches macOS: closing the main window hides it while the timer continues.
+- In tray-only mode, the floating status card can be dragged to any position and remembers it between launches.
+- The pinned timer is a transparent, topmost, resizable WPF window with per-mode sizes.
 - Local data is stored under `%APPDATA%\Clockin\clockin.json`, with automatic backups under `%APPDATA%\Clockin\Backups`.
 - Mac JSON backups can be imported. Date values written by Swift's default `JSONEncoder` (seconds since 2001) and ISO dates are both accepted.
 

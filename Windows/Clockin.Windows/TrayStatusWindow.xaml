@@ -4,7 +4,7 @@
         Width="300" Height="42" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False"
         Topmost="True" ShowActivated="False" WindowStartupLocation="Manual"
         Background="Transparent" AllowsTransparency="True">
-  <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" CornerRadius="11" Padding="9,4" MouseLeftButtonDown="Open_Click">
+  <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" CornerRadius="11" Padding="9,4" Cursor="SizeAll" ToolTip="Drag to reposition · click to open" MouseLeftButtonDown="TrayStatus_MouseLeftButtonDown" MouseMove="TrayStatus_MouseMove" MouseLeftButtonUp="TrayStatus_MouseLeftButtonUp">
     <DockPanel LastChildFill="False">
       <Border Width="22" Height="22" CornerRadius="7" Background="{DynamicResource WindowBackgroundBrush}" DockPanel.Dock="Left" Margin="0,0,8,0"><TextBlock Text="◷" FontSize="14" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
       <StackPanel VerticalAlignment="Center">
