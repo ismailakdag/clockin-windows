@@ -41,7 +41,13 @@ public static class WindowsCsvImporter
 
     private static bool TryValue(IReadOnlyList<string> row, int index, out string value) { value = index >= 0 && index < row.Count ? row[index].Trim() : ""; return index >= 0 && index < row.Count; }
     private static string Value(IReadOnlyList<string> row, int index) => index >= 0 && index < row.Count ? row[index].Trim() : "";
-    private static bool ParseDate(string value, out DateTime date) => DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out date) && value.Contains('T');
+    private static bool ParseDate(string value, out DateTime date)
+    {
+        if (!value.Contains('T')) { date = default; return false; }
+        if (!DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out var parsed)) { date = default; return false; }
+        date = parsed.LocalDateTime;
+        return true;
+    }
 
     public static List<List<string>> ParseRows(string text)
     {

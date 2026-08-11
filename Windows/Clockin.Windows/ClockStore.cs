@@ -135,7 +135,14 @@ public sealed class ClockStore
         var items = imported.Select(session =>
         {
             var key = Key(session);
-            if (Data.Sessions.Any(existing => Key(existing) == key) || !seen.Add(key)) return new ImportComparisonItem(session, ImportMatchKind.Duplicate);
+            if (!seen.Add(key)) return new ImportComparisonItem(session, ImportMatchKind.Duplicate);
+            var exact = Data.Sessions.FirstOrDefault(existing => Key(existing) == key);
+            if (exact is not null)
+            {
+                return session.Source != "Clockin" && exact.Source == "Clockin" && exact.MatchedExternalSource is null
+                    ? new ImportComparisonItem(session, ImportMatchKind.Matched, exact)
+                    : new ImportComparisonItem(session, ImportMatchKind.Duplicate);
+            }
             var match = session.Source != "Clockin" ? FindClockinMatch(session) : null;
             return match is null ? new ImportComparisonItem(session, ImportMatchKind.New) : new ImportComparisonItem(session, ImportMatchKind.Matched, match);
         }).ToList();
@@ -244,6 +251,20 @@ public sealed class ClockStore
         var current = RateRules.Where(x => x.Applies(DateTime.Now)).OrderByDescending(x => x.EffectiveFrom).FirstOrDefault();
         if (current is not null) Data.HourlyRate = current.HourlyRate;
     }
-    private WorkSession? FindClockinMatch(WorkSession external) => Data.Sessions.FirstOrDefault(local => local.Source == "Clockin" && local.MatchedExternalSource is null && local.Start.Date == external.Start.Date && Math.Abs((local.Start - external.Start).TotalSeconds) <= 90 && Math.Abs((local.End - external.End).TotalSeconds) <= 90 && Math.Abs(local.Duration - external.Duration) <= 120);
-    private static string Key(WorkSession session) => $"{session.Start.Ticks / TimeSpan.TicksPerSecond}|{session.End.Ticks / TimeSpan.TicksPerSecond}|{(int)session.Duration}";
+    private WorkSession? FindClockinMatch(WorkSession external)
+    {
+        var externalStart = Utc(external.Start);
+        var externalEnd = Utc(external.End);
+        return Data.Sessions.FirstOrDefault(local =>
+        {
+            if (local.Source != "Clockin" || local.MatchedExternalSource is not null) return false;
+            var localStart = Utc(local.Start);
+            var localEnd = Utc(local.End);
+            var sameDay = localStart.ToLocalTime().Date == externalStart.ToLocalTime().Date;
+            return sameDay && Math.Abs((localStart - externalStart).TotalSeconds) <= 90 && Math.Abs((localEnd - externalEnd).TotalSeconds) <= 90 && Math.Abs(local.Duration - external.Duration) <= 120;
+        });
+    }
+
+    private static DateTimeOffset Utc(DateTime value) => new(value.ToUniversalTime(), TimeSpan.Zero);
+    private static string Key(WorkSession session) => $"{Utc(session.Start).ToUnixTimeSeconds()}|{Utc(session.End).ToUnixTimeSeconds()}|{(int)session.Duration}";
 }
