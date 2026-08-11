@@ -9,6 +9,8 @@ namespace Clockin.Windows;
 public partial class App : Application
 {
     private NotifyIcon? _tray;
+    private Icon? _trayIcon;
+    private string _trayTheme = "";
     private MainWindow? _main;
     private PinnedWindow? _pinned;
     private TrayStatusWindow? _trayStatus;
@@ -27,7 +29,7 @@ public partial class App : Application
 
         _tray = new NotifyIcon
         {
-            Icon = SystemIcons.Application,
+            Icon = _trayIcon = TrayIconFactory.Create(ThemePalette.For(_trayTheme = SettingStore.Shared.Get("Theme", "Carbon"))),
             Text = "Clockin",
             Visible = true
         };
@@ -35,6 +37,7 @@ public partial class App : Application
         _tray.ContextMenuStrip = BuildTrayMenu();
         _trayTimer.Tick += (_, _) => UpdateTrayPresentation();
         _trayTimer.Start();
+        SettingStore.Shared.Changed += SettingsChanged;
 
         Store.Changed += OnStoreChanged;
         HotKeyManager.Start(_main, Store, ShowMain);
@@ -83,6 +86,18 @@ public partial class App : Application
         var old = _tray.ContextMenuStrip;
         _tray.ContextMenuStrip = BuildTrayMenu();
         old?.Dispose();
+    }
+
+    private void SettingsChanged(object? sender, EventArgs e)
+    {
+        if (!Dispatcher.CheckAccess()) { Dispatcher.BeginInvoke(() => SettingsChanged(sender, e)); return; }
+        var themeName = SettingStore.Shared.Get("Theme", "Carbon");
+        if (string.Equals(themeName, _trayTheme, StringComparison.OrdinalIgnoreCase) || _tray is null) return;
+        var previous = _trayIcon;
+        _trayTheme = themeName;
+        _trayIcon = TrayIconFactory.Create(ThemePalette.For(themeName));
+        _tray.Icon = _trayIcon;
+        previous?.Dispose();
     }
 
     private void OnStoreChanged(object? sender, EventArgs e)
@@ -134,7 +149,9 @@ public partial class App : Application
         _pinned?.Close();
         _trayStatus?.Close();
         _trayTimer.Stop();
+        SettingStore.Shared.Changed -= SettingsChanged;
         _tray?.Dispose();
+        _trayIcon?.Dispose();
         _main?.CloseFromApp();
         Shutdown(0);
     }
@@ -143,7 +160,9 @@ public partial class App : Application
     {
         _trayTimer.Stop();
         _trayStatus?.Close();
+        SettingStore.Shared.Changed -= SettingsChanged;
         _tray?.Dispose();
+        _trayIcon?.Dispose();
         base.OnExit(e);
     }
 }
