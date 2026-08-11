@@ -1,5 +1,7 @@
 # Clockin for macOS
 
+The repository also contains a Windows-native port under [`Windows`](Windows/README.md). It preserves the same timer, earnings, rate schedule, import, backup, tray, pinned timer and global shortcut behavior using WPF/.NET 8.
+
 A native SwiftUI menu-bar time tracker with pause/resume, hourly earnings, a floating always-visible timer, local persistence, and CSV timesheet import.
 
 Double-clicking the app opens a regular Clockin window. Closing it keeps the menu-bar timer running; opening the app again brings the window back.

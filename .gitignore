@@ -5,3 +5,5 @@ dist/
 DerivedData/
 *.swp
 Resources/Mascot/
+**/bin/
+**/obj/

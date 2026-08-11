@@ -1,0 +1,78 @@
+<Window x:Class="Clockin.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Clockin" Width="390" Height="650" MinWidth="390" MaxWidth="390" MinHeight="650" MaxHeight="650"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" ShowInTaskbar="False" Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextBrush}" FontFamily="Segoe UI" ResizeMode="NoResize" Closing="OnClosing">
+  <Window.Resources>
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#0E1118"/>
+    <SolidColorBrush x:Key="CardBrush" Color="#171D29"/>
+    <SolidColorBrush x:Key="CardStrokeBrush" Color="#2B3548"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="#59F29A"/>
+    <SolidColorBrush x:Key="SecondaryAccentBrush" Color="#67DDEB"/>
+    <SolidColorBrush x:Key="TextBrush" Color="#EEF2F8"/>
+    <SolidColorBrush x:Key="MutedBrush" Color="#93A0B5"/>
+    <SolidColorBrush x:Key="ActionForegroundBrush" Color="#07120D"/>
+    <SolidColorBrush x:Key="BlackOverlayBrush" Color="#29000000"/>
+    <Style TargetType="Button">
+      <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="Background" Value="{DynamicResource CardBrush}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeBrush}"/><Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Padding" Value="9,6"/><Setter Property="Margin" Value="2"/><Setter Property="FontSize" Value="10"/>
+    </Style>
+    <Style x:Key="PlainButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="4,3"/><Setter Property="FontSize" Value="12"/><Setter Property="Width" Value="28"/><Setter Property="Height" Value="28"/><Setter Property="Margin" Value="0"/></Style>
+    <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource PlainButton}"><Setter Property="Width" Value="Auto"/><Setter Property="MinWidth" Value="118"/><Setter Property="Height" Value="30"/><Setter Property="Padding" Value="7,4"/><Setter Property="HorizontalContentAlignment" Value="Center"/></Style>
+    <Style x:Key="HeaderLinkButton" TargetType="Button" BasedOn="{StaticResource PlainButton}"><Setter Property="Width" Value="58"/><Setter Property="Height" Value="28"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="Bold"/></Style>
+    <Style x:Key="SectionLinkButton" TargetType="Button" BasedOn="{StaticResource PlainButton}"><Setter Property="Width" Value="Auto"/><Setter Property="MinWidth" Value="155"/><Setter Property="Height" Value="26"/><Setter Property="Padding" Value="0"/><Setter Property="FontSize" Value="9"/><Setter Property="HorizontalContentAlignment" Value="Left"/></Style>
+    <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Background" Value="{DynamicResource AccentBrush}"/><Setter Property="Foreground" Value="{DynamicResource ActionForegroundBrush}"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="FontSize" Value="13"/><Setter Property="Padding" Value="12,10"/><Setter Property="BorderBrush" Value="#44FFFFFF"/></Style>
+    <Style TargetType="TextBox"><Setter Property="Background" Value="{DynamicResource BlackOverlayBrush}"/><Setter Property="Foreground" Value="{DynamicResource TextBrush}"/><Setter Property="BorderBrush" Value="{DynamicResource CardStrokeBrush}"/><Setter Property="Padding" Value="7,5"/></Style>
+  </Window.Resources>
+  <Border Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" CornerRadius="12">
+    <Grid MouseLeftButtonDown="DragWindow">
+      <Grid.RowDefinitions><RowDefinition Height="50"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+      <Border Grid.Row="0" Background="#09000000" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="0,0,0,1">
+        <Grid Margin="15,0">
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Border Width="30" Height="30" CornerRadius="9" Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1"><TextBlock Text="◷" FontSize="19" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><StackPanel Margin="8,0,0,0" VerticalAlignment="Center"><TextBlock Text="CLOCKIN" FontSize="13" FontWeight="Black"/><TextBlock Text="FOCUS TIMER" FontSize="7" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}" Margin="0,1,0,0"/></StackPanel></StackPanel>
+          <Border HorizontalAlignment="Right" VerticalAlignment="Center" Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" CornerRadius="10" Padding="3"><StackPanel Orientation="Horizontal">
+            <Button Style="{StaticResource PlainButton}" Content="▥" ToolTip="Earnings history" Click="History_Click"/>
+            <Button Style="{StaticResource PlainButton}" Content="▦" ToolTip="Work heatmap" Click="Heatmap_Click"/>
+            <Button Style="{StaticResource PlainButton}" Content="?" ToolTip="How to use Clockin" Click="Guide_Click"/>
+            <Button x:Name="ProgressButton" Style="{StaticResource PlainButton}" Width="38" Content="LV 1" Foreground="{DynamicResource AccentBrush}" ToolTip="Progress, levels and badges" Click="Progress_Click"/>
+            <Button Style="{StaticResource PlainButton}" Content="⚙" ToolTip="Settings" Click="Settings_Click"/>
+            <Button x:Name="PinButton" Style="{StaticResource PlainButton}" Content="📌" ToolTip="Pin timer" Click="Pin_Click"/>
+            <Button Style="{StaticResource PlainButton}" Content="—" ToolTip="Minimize to tray" Click="Minimize_Click"/>
+            <Button Style="{StaticResource PlainButton}" Content="×" ToolTip="Hide to tray" Click="CloseToTray_Click"/>
+          </StackPanel></Border>
+        </Grid>
+      </Border>
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="15,12,15,64">
+        <StackPanel>
+          <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" CornerRadius="15" Padding="19" Margin="0,0,0,10">
+            <StackPanel>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"><Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="{DynamicResource MutedBrush}" Margin="0,0,7,0" VerticalAlignment="Center"/><TextBlock x:Name="StatusText" Text="READY TO FOCUS" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/></StackPanel>
+              <TextBlock x:Name="ElapsedText" Text="00:00:00" FontFamily="Cascadia Mono" FontSize="48" HorizontalAlignment="Center" Margin="0,13,0,1"/>
+              <TextBlock x:Name="EarningsText" Text="$0.00" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center"/>
+              <TextBlock x:Name="TryText" Text="≈ ₺0.00" FontSize="11" Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Center" Margin="0,2,0,9"/>
+              <Border Background="{DynamicResource BlackOverlayBrush}" CornerRadius="10" Padding="10" Margin="0,2,0,12"><StackPanel>
+                <DockPanel><StackPanel Orientation="Horizontal"><TextBlock x:Name="MomentumIcon" Text="✦" FontSize="15" Foreground="{DynamicResource AccentBrush}" Margin="0,0,8,0"/><StackPanel><TextBlock x:Name="MomentumTitle" Text="YOUR EARNING POWER" FontSize="8" FontWeight="Black" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="MomentumText" Text="+$0.0069/sec" FontFamily="Cascadia Mono" FontSize="10" Foreground="{DynamicResource AccentBrush}" Margin="0,3,0,0"/></StackPanel></StackPanel><StackPanel HorizontalAlignment="Right"><TextBlock x:Name="MilestoneText" Text="NEXT $10.00" FontSize="8" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="MilestoneRemaining" Text="$10.00 to go" FontSize="9" HorizontalAlignment="Right"/></StackPanel></DockPanel>
+                <ProgressBar x:Name="MomentumProgress" Height="4" Margin="0,8,0,0" Foreground="{DynamicResource AccentBrush}" Background="{DynamicResource CardStrokeBrush}" Maximum="1"/>
+              </StackPanel></Border>
+              <StackPanel x:Name="IdleControls"><Button x:Name="ClockInButton" Style="{StaticResource AccentButton}" Content="▶  Clock in" Click="ClockIn_Click"/><Button Style="{StaticResource PlainButton}" Content="◷  Start with elapsed time" Foreground="{DynamicResource MutedBrush}" Click="Manual_Click"/></StackPanel>
+              <StackPanel x:Name="RunningControls" Visibility="Collapsed"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><Button x:Name="PauseButton" Content="Ⅱ  Pause" Click="Pause_Click"/><Button Grid.Column="1" Content="■  Clock out" Foreground="#FF7A78" MinWidth="118" Click="ClockOut_Click"/></Grid><Button Style="{StaticResource LinkButton}" Content="×  Cancel session" Foreground="{DynamicResource MutedBrush}" Click="Cancel_Click"/></StackPanel>
+            </StackPanel>
+          </Border>
+            <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" CornerRadius="15" Padding="10" Margin="0,0,0,10">
+            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="92"/><ColumnDefinition/></Grid.ColumnDefinitions><Image x:Name="MascotImage" Grid.Column="0" Source="Assets/Mascot/idle.png" Width="80" Height="80" Stretch="Uniform"/><TextBlock x:Name="MascotEffectText" Text="" FontSize="12" FontWeight="Black" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5"><TextBlock.RenderTransform><TranslateTransform x:Name="MascotEffectTransform"/></TextBlock.RenderTransform></TextBlock><StackPanel Grid.Column="1" Margin="4,3,0,0"><TextBlock Text="FOCUS COMPANION" FontSize="8" FontWeight="Black" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="MascotMessage" Text="Ready when you are" FontSize="11" FontWeight="SemiBold" Margin="0,5,0,0" TextWrapping="Wrap" RenderTransformOrigin="0.5,0.5"><TextBlock.RenderTransform><TranslateTransform x:Name="MascotMessageTransform"/></TextBlock.RenderTransform></TextBlock><Button Style="{StaticResource SectionLinkButton}" Content="Levels &amp; badges  →" Foreground="{DynamicResource AccentBrush}" Margin="0,4,0,0" Click="Progress_Click"/></StackPanel></Grid>
+          </Border>
+          <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" CornerRadius="15" Padding="12" Margin="0,0,0,10">
+            <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="TODAY" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="TodayHours" Text="0m" FontSize="14" FontWeight="SemiBold" Margin="0,4,0,0"/><TextBlock Text="worked" FontSize="8" Foreground="{DynamicResource MutedBrush}"/></StackPanel><Border Grid.Column="1" Width="1" Height="35" Background="{DynamicResource CardStrokeBrush}" HorizontalAlignment="Left"/><StackPanel Grid.Column="1" Margin="14,0,0,0"><TextBlock Text="EARNED" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="TodayEarned" Text="$0.00" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" Margin="0,4,0,0"/><TextBlock x:Name="TodayTry" Text="" FontSize="9" Foreground="{DynamicResource AccentBrush}"/></StackPanel><StackPanel Grid.Column="2" HorizontalAlignment="Right"><TextBlock Text="ALL TIME" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="AllHours" Text="0m" FontSize="14" FontWeight="SemiBold" Margin="0,4,0,0"/><TextBlock x:Name="AllEarned" Text="$0.00" FontSize="9" Foreground="{DynamicResource AccentBrush}"/></StackPanel></Grid>
+          </Border>
+          <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" CornerRadius="15" Padding="12" Margin="0,0,0,10"><StackPanel><DockPanel><TextBlock Text="◎  GOALS" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="GoalHint" Text="Set in Settings" HorizontalAlignment="Right" FontSize="9" Foreground="{DynamicResource MutedBrush}"/></DockPanel><TextBlock x:Name="GoalText" Text="Set daily or monthly goals to earn bonus XP." FontSize="10" Foreground="{DynamicResource MutedBrush}" Margin="0,8,0,0" TextWrapping="Wrap"/><ProgressBar x:Name="DailyGoalProgress" Height="5" Margin="0,8,0,0" Foreground="{DynamicResource AccentBrush}" Background="{DynamicResource CardStrokeBrush}" Maximum="1"/></StackPanel></Border>
+          <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" CornerRadius="15" Padding="12" Margin="0,0,0,10"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="32"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="$↔" FontSize="18" Foreground="{DynamicResource SecondaryAccentBrush}" VerticalAlignment="Center"/><StackPanel Grid.Column="1" Margin="8,0,0,0"><TextBlock Text="USD / TRY" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/><TextBlock x:Name="RateText" Text="RATE UNAVAILABLE" FontSize="13" FontWeight="SemiBold" Margin="0,3,0,0"/><TextBlock x:Name="RateStatus" Text="" FontSize="9" Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,0"/></StackPanel><TextBlock x:Name="RateDate" Grid.Column="2" Text="" FontFamily="Cascadia Mono" FontSize="9" Foreground="{DynamicResource MutedBrush}" VerticalAlignment="Top"/></Grid></Border>
+          <DockPanel LastChildFill="False" Margin="2,0,2,5"><TextBlock Text="RECENT SESSIONS" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/><Button Style="{StaticResource HeaderLinkButton}" Content="History" DockPanel.Dock="Right" Foreground="{DynamicResource AccentBrush}" Click="History_Click"/></DockPanel>
+          <StackPanel x:Name="RecentPanel"/>
+          <DockPanel LastChildFill="False" Margin="2,9,2,0"><TextBlock x:Name="FooterText" Text="ALL  0m  •  $0.00" FontSize="9" FontWeight="Bold" Foreground="{DynamicResource MutedBrush}"/><Button Style="{StaticResource PlainButton}" Content="Quit" DockPanel.Dock="Right" Foreground="{DynamicResource MutedBrush}" Click="Quit_Click"/></DockPanel>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </Border>
+</Window>
