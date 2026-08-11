@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -21,7 +22,7 @@ public partial class PinnedWindow : Window
         ThemeManager.Apply(this, SettingStore.Shared);
         _timer.Tick += (_, _) => Refresh();
         _timer.Start();
-        Loaded += (_, _) => { if (Left == 0 && Top == 0) { Left = SystemParameters.WorkArea.Right - Width - 25; Top = SystemParameters.WorkArea.Top + 35; } Refresh(); };
+        Loaded += (_, _) => { if (double.IsNaN(Left) || double.IsNaN(Top) || (Left == 0 && Top == 0)) { Left = SystemParameters.WorkArea.Right - Width - 25; Top = SystemParameters.WorkArea.Top + 35; } ClampToWorkArea(); Refresh(); };
     }
 
     private void Refresh()
@@ -57,14 +58,64 @@ public partial class PinnedWindow : Window
     private void ApplyMode(string mode)
     {
         if (mode == _mode) return;
+        var oldWidth = ActualWidth > 0 ? ActualWidth : Width;
+        var oldHeight = ActualHeight > 0 ? ActualHeight : Height;
+        var oldRight = !double.IsNaN(Left) ? Left + oldWidth : double.NaN;
+        var oldBottom = !double.IsNaN(Top) ? Top + oldHeight : double.NaN;
         _mode = mode;
         CompactView.Visibility = mode == "Compact" ? Visibility.Visible : Visibility.Collapsed;
         MoneyView.Visibility = mode == "Money" ? Visibility.Visible : Visibility.Collapsed;
         GoalView.Visibility = mode == "Goal" ? Visibility.Visible : Visibility.Collapsed;
         AllView.Visibility = mode == "All" ? Visibility.Visible : Visibility.Collapsed;
-        var size = mode switch { "Compact" => (246d, 72d), "Goal" => (300d, 150d), "All" => (370d, 230d), _ => (320d, 112d) };
-        Width = size.Item1; Height = size.Item2;
-        if (Left == 0 && Top == 0) { Left = SystemParameters.WorkArea.Right - Width - 25; Top = SystemParameters.WorkArea.Top + 35; }
+        var defaults = mode switch { "Compact" => (246d, 72d), "Goal" => (300d, 116d), "All" => (370d, 230d), _ => (320d, 112d) };
+        Width = Math.Clamp(SettingStore.Shared.GetDouble($"PinnedWidth.{mode}", defaults.Item1), MinWidth, MaxWidth);
+        Height = Math.Clamp(SettingStore.Shared.GetDouble($"PinnedHeight.{mode}", defaults.Item2), MinHeight, MaxHeight);
+        if (IsLoaded && !double.IsNaN(oldRight) && !double.IsNaN(oldBottom))
+        {
+            Left = oldRight - Width;
+            Top = oldBottom - Height;
+            ClampToWorkArea();
+        }
+    }
+
+    private void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
+    {
+        if (sender is not Thumb { Tag: string edges }) return;
+        var width = Width;
+        var height = Height;
+        if (edges.Contains('R')) width = Math.Clamp(width + e.HorizontalChange, MinWidth, MaxWidth);
+        if (edges.Contains('B')) height = Math.Clamp(height + e.VerticalChange, MinHeight, MaxHeight);
+        if (edges.Contains('L'))
+        {
+            var next = Math.Clamp(width - e.HorizontalChange, MinWidth, MaxWidth);
+            Left += width - next;
+            width = next;
+        }
+        if (edges.Contains('T'))
+        {
+            var next = Math.Clamp(height - e.VerticalChange, MinHeight, MaxHeight);
+            Top += height - next;
+            height = next;
+        }
+        Width = width;
+        Height = height;
+        ClampToWorkArea();
+    }
+
+    private void ResizeThumb_DragCompleted(object sender, DragCompletedEventArgs e) => SaveCurrentSize();
+
+    private void SaveCurrentSize()
+    {
+        if (string.IsNullOrWhiteSpace(_mode) || Width <= 0 || Height <= 0) return;
+        SettingStore.Shared.Set($"PinnedWidth.{_mode}", Width);
+        SettingStore.Shared.Set($"PinnedHeight.{_mode}", Height);
+    }
+
+    private void ClampToWorkArea()
+    {
+        var area = SystemParameters.WorkArea;
+        if (!double.IsNaN(Left)) Left = Math.Clamp(Left, area.Left, Math.Max(area.Left, area.Right - Width));
+        if (!double.IsNaN(Top)) Top = Math.Clamp(Top, area.Top, Math.Max(area.Top, area.Bottom - Height));
     }
 
     private void SetGoal(TextBlock label, System.Windows.Controls.ProgressBar bar, string name, double value, double goal, string color)
@@ -97,5 +148,5 @@ public partial class PinnedWindow : Window
     }
 
     private void RadioVolume_Changed(object sender, RoutedPropertyChangedEventArgs<double> e) { if (IsLoaded) RadioPlayer.Shared.Volume = AllRadioVolume.Value; }
-    private void DragWindow(object sender, MouseButtonEventArgs e) { if (e.LeftButton == MouseButtonState.Pressed) DragMove(); }
+    private void DragWindow(object sender, MouseButtonEventArgs e) { if (e.OriginalSource is Thumb) return; if (e.LeftButton == MouseButtonState.Pressed) DragMove(); }
 }

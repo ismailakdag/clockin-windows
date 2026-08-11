@@ -10,7 +10,6 @@ using WpfHorizontalAlignment = System.Windows.HorizontalAlignment;
 using WpfVerticalAlignment = System.Windows.VerticalAlignment;
 using WpfToolTip = System.Windows.Controls.ToolTip;
 using WpfBrushes = System.Windows.Media.Brushes;
-using WpfMessageBox = System.Windows.MessageBox;
 
 namespace Clockin.Windows;
 
@@ -131,7 +130,7 @@ public partial class HistoryWindow : Window
     private void DeleteRow_Click(object sender, RoutedEventArgs e)
     {
         if (sender is not WpfButton { Tag: WorkSession session }) return;
-        if (WpfMessageBox.Show("Delete this session?", "Clockin", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) _store.DeleteSession(session.Id);
+        if (ClockinDialog.Confirm(this, "Delete session", "Delete this session? Its time and earnings will be removed permanently.", "Delete", destructive: true)) _store.DeleteSession(session.Id);
     }
 
     private WpfToolTip DailyTooltip(DateTime day, DayPoint point)
@@ -150,9 +149,9 @@ public partial class HistoryWindow : Window
     private TextBlock Text(string value, double size, string color = "TextBrush", FontWeight? weight = null, TextAlignment alignment = TextAlignment.Left) => new() { Text = value, FontSize = size, Foreground = Brush(color), FontWeight = weight ?? FontWeights.Normal, TextWrapping = TextWrapping.Wrap, TextAlignment = alignment, Margin = new Thickness(0, 2, 0, 2) };
     private TextBlock Text(string value, double size, string color, TextAlignment alignment) => Text(value, size, color, null, alignment);
     private SolidColorBrush Brush(string key) => (SolidColorBrush)FindResource(key);
-    private void ImportCsv_Click(object sender, RoutedEventArgs e) { var dialog = new Microsoft.Win32.OpenFileDialog { Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*" }; if (dialog.ShowDialog() != true) return; try { new CsvPreviewWindow(_store, _store.PreviewCsv(dialog.FileName)) { Owner = this }.ShowDialog(); Build(); } catch (Exception ex) { WpfMessageBox.Show(ex.Message, "CSV import", MessageBoxButton.OK, MessageBoxImage.Warning); } }
+    private void ImportCsv_Click(object sender, RoutedEventArgs e) { var dialog = new Microsoft.Win32.OpenFileDialog { Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*" }; if (dialog.ShowDialog() != true) return; try { new CsvPreviewWindow(_store, _store.PreviewCsv(dialog.FileName)) { Owner = this }.ShowDialog(); Build(); } catch (Exception ex) { ClockinDialog.Alert(this, "CSV import", ex.Message); } }
     private void Paste_Click(object sender, RoutedEventArgs e) { new PasteWindow(_store) { Owner = this }.ShowDialog(); Build(); }
-    private void DeleteAll_Click(object sender, RoutedEventArgs e) { if (!_store.Sessions.Any()) { WpfMessageBox.Show("There are no completed entries to delete.", "Clockin", MessageBoxButton.OK, MessageBoxImage.Information); return; } if (WpfMessageBox.Show($"Delete all {_store.Sessions.Count} completed entries? This cannot be undone.", "Delete all entries", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) _store.DeleteAllSessions(); }
+    private void DeleteAll_Click(object sender, RoutedEventArgs e) { if (!_store.Sessions.Any()) { ClockinDialog.Alert(this, "Delete all entries", "There are no completed entries to delete."); return; } if (ClockinDialog.Confirm(this, "Delete all entries", $"Delete all {_store.Sessions.Count} completed entries? This cannot be undone.", "Delete all", destructive: true)) _store.DeleteAllSessions(); }
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
     private readonly record struct DayPoint(double Duration, double Earnings);
 }

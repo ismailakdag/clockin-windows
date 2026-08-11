@@ -179,7 +179,7 @@ public partial class ProgressWindow : Window
     private void Badge_Click(object sender, RoutedEventArgs e)
     {
         if (sender is WpfButton { Tag: ProgressBadgeInfo badge })
-            System.Windows.MessageBox.Show($"{badge.Title}\n\n{badge.Requirement}\n\nCurrent: {badge.Progress}\n\nStatus: {(badge.Unlocked ? "UNLOCKED" : "LOCKED")}", "Badge details", MessageBoxButton.OK, MessageBoxImage.Information);
+            ClockinDialog.Alert(this, badge.Title, $"{badge.Requirement}\n\nCurrent: {badge.Progress}\n\nStatus: {(badge.Unlocked ? "UNLOCKED" : "LOCKED")}");
     }
 
     private void ShareStats_Click(object sender, RoutedEventArgs e) => new ShareStatsWindow(_store, _settings) { Owner = this }.ShowDialog();

@@ -52,12 +52,12 @@ public partial class SettingsWindow : Window
     private void ClearLatest_Click(object sender, RoutedEventArgs e)
     {
         if (!_store.Sessions.Any()) { Status.Text = "There is no completed entry to clear."; return; }
-        if (System.Windows.MessageBox.Show("Clear the latest entry so you can enter it again?", "Clear latest entry", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) _store.DeleteLatestSession();
+        if (ClockinDialog.Confirm(this, "Clear latest entry", "Clear the latest entry so you can enter it again?", "Clear last", destructive: true)) _store.DeleteLatestSession();
     }
     private void DeleteAll_Click(object sender, RoutedEventArgs e)
     {
         if (!_store.Sessions.Any()) { Status.Text = "There are no completed entries to delete."; return; }
-        if (System.Windows.MessageBox.Show($"Delete all {_store.Sessions.Count} completed entries? This cannot be undone.", "Delete all entries", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) _store.DeleteAllSessions();
+        if (ClockinDialog.Confirm(this, "Delete all entries", $"Delete all {_store.Sessions.Count} completed entries? This cannot be undone.", "Delete all", destructive: true)) _store.DeleteAllSessions();
     }
     private void OpenData_Click(object sender, RoutedEventArgs e) => Process.Start(new ProcessStartInfo("explorer.exe", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Clockin")) { UseShellExecute = true });
     private void Close_Click(object sender, RoutedEventArgs e) => Close();

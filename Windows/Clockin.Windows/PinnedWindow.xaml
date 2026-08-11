@@ -3,6 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Width="320" Height="112" MinWidth="246" MinHeight="72" MaxWidth="640" MaxHeight="500"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent" Topmost="True" ShowInTaskbar="False" ResizeMode="CanResize" MouseLeftButtonDown="DragWindow">
+  <Window.Resources>
+    <Style x:Key="ResizeThumb" TargetType="Thumb">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Thumb"><Border Background="{TemplateBinding Background}"/></ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Window.Resources>
   <Border x:Name="PinnedShell" Background="{DynamicResource CardBrush}" Opacity="0.96" CornerRadius="18" BorderBrush="{DynamicResource CardStrokeBrush}" BorderThickness="1" Padding="15">
     <Grid>
       <Grid x:Name="CompactView" Visibility="Collapsed">
@@ -33,6 +43,15 @@
           <DockPanel Margin="0,8,0,0"><TextBlock x:Name="AllRadioIcon" Text="♫" FontSize="13" Foreground="{DynamicResource MutedBrush}" Margin="0,0,6,0"/><TextBlock x:Name="AllRadioText" Text="FOCUS RADIO OFF" FontSize="8" FontWeight="Bold"/><Button x:Name="AllRadioButton" Content="▶" Width="26" Height="24" Padding="0" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="Radio_Click"/><Slider x:Name="AllRadioVolume" Width="65" Minimum="0" Maximum="1" Margin="8,0,0,0" HorizontalAlignment="Right" DockPanel.Dock="Right" ValueChanged="RadioVolume_Changed"/></DockPanel>
         </StackPanel>
       </ScrollViewer>
+      <TextBlock Text="↘" FontSize="10" Foreground="{DynamicResource MutedBrush}" Opacity="0.35" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,2,1" IsHitTestVisible="False" Panel.ZIndex="20"/>
+      <Thumb Style="{StaticResource ResizeThumb}" Tag="L" Background="Transparent" Width="10" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,10,0,10" Cursor="SizeWE" DragDelta="ResizeThumb_DragDelta" DragCompleted="ResizeThumb_DragCompleted" Panel.ZIndex="30"/>
+      <Thumb Style="{StaticResource ResizeThumb}" Tag="R" Background="Transparent" Width="10" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0,10,0,10" Cursor="SizeWE" DragDelta="ResizeThumb_DragDelta" DragCompleted="ResizeThumb_DragCompleted" Panel.ZIndex="30"/>
+      <Thumb Style="{StaticResource ResizeThumb}" Tag="T" Background="Transparent" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10,0,10,0" Cursor="SizeNS" DragDelta="ResizeThumb_DragDelta" DragCompleted="ResizeThumb_DragCompleted" Panel.ZIndex="30"/>
+      <Thumb Style="{StaticResource ResizeThumb}" Tag="B" Background="Transparent" Height="10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="10,0,10,0" Cursor="SizeNS" DragDelta="ResizeThumb_DragDelta" DragCompleted="ResizeThumb_DragCompleted" Panel.ZIndex="30"/>
+      <Thumb Style="{StaticResource ResizeThumb}" Tag="TL" Background="Transparent" Width="14" Height="14" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="SizeNWSE" DragDelta="ResizeThumb_DragDelta" DragCompleted="ResizeThumb_DragCompleted" Panel.ZIndex="31"/>
+      <Thumb Style="{StaticResource ResizeThumb}" Tag="TR" Background="Transparent" Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Top" Cursor="SizeNESW" DragDelta="ResizeThumb_DragDelta" DragCompleted="ResizeThumb_DragCompleted" Panel.ZIndex="31"/>
+      <Thumb Style="{StaticResource ResizeThumb}" Tag="BL" Background="Transparent" Width="14" Height="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Cursor="SizeNESW" DragDelta="ResizeThumb_DragDelta" DragCompleted="ResizeThumb_DragCompleted" Panel.ZIndex="31"/>
+      <Thumb Style="{StaticResource ResizeThumb}" Tag="BR" Background="Transparent" Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Bottom" Cursor="SizeNWSE" DragDelta="ResizeThumb_DragDelta" DragCompleted="ResizeThumb_DragCompleted" Panel.ZIndex="31"/>
     </Grid>
   </Border>
 </Window>

@@ -156,7 +156,7 @@ public partial class MainWindow : Window
     private void Pause_Click(object sender, RoutedEventArgs e) { if (_store.Running?.IsPaused == true) _store.Resume(); else _store.Pause(); }
     private void ClockOut_Click(object sender, RoutedEventArgs e) { var session = _store.ClockOut(); if (session is not null) new SessionSummaryWindow(_store, session) { Owner = this }.ShowDialog(); }
     private void Manual_Click(object sender, RoutedEventArgs e) { new ManualStartWindow(_store) { Owner = this }.ShowDialog(); }
-    private void Cancel_Click(object sender, RoutedEventArgs e) { if (System.Windows.MessageBox.Show("Discard the active session? No earnings will be added.", "Cancel session", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) _store.CancelRunning(); }
+    private void Cancel_Click(object sender, RoutedEventArgs e) { if (ClockinDialog.Confirm(this, "Cancel session", "Discard the active session? No earnings will be added.", "Cancel session", destructive: true)) _store.CancelRunning(); }
     private void Pin_Click(object sender, RoutedEventArgs e) => _store.SetPinned(!_store.PinVisible);
     private void Settings_Click(object sender, RoutedEventArgs e) { new SettingsWindow(_store, _rates) { Owner = this }.ShowDialog(); ApplyTheme(); RefreshFromStore(); }
     private void History_Click(object sender, RoutedEventArgs e) { new HistoryWindow(_store, _rates) { Owner = this }.ShowDialog(); RefreshFromStore(); }
@@ -170,7 +170,7 @@ public partial class MainWindow : Window
     private void ClearLatest_Click(object sender, RoutedEventArgs e)
     {
         if (!_store.Sessions.Any()) return;
-        if (System.Windows.MessageBox.Show("Clear the latest entry so you can enter it again?", "Clear latest entry", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) _store.DeleteLatestSession();
+        if (ClockinDialog.Confirm(this, "Clear latest entry", "Clear the latest entry so you can enter it again?", "Clear last", destructive: true)) _store.DeleteLatestSession();
     }
     private void InstallBottomActions()
     {
