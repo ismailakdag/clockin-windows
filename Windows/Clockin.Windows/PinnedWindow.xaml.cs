@@ -43,6 +43,7 @@ public partial class PinnedWindow : Window
         var now = DateTime.Now;
         var mode = SettingStore.Shared.Get("PinnedMode", "Money");
         ApplyMode(mode);
+        ApplyTextScale();
         var theme = ThemePalette.For(SettingStore.Shared.Get("Theme", "Carbon"));
         var active = _store.Running?.IsPaused == false;
         var value = _store.CurrentEarnings(now);
@@ -80,7 +81,7 @@ public partial class PinnedWindow : Window
         MoneyView.Visibility = mode == "Money" ? Visibility.Visible : Visibility.Collapsed;
         GoalView.Visibility = mode == "Goal" ? Visibility.Visible : Visibility.Collapsed;
         AllView.Visibility = mode == "All" ? Visibility.Visible : Visibility.Collapsed;
-        var allHeight = SettingStore.Shared.GetDouble("GoalDailyHours") > 0 || SettingStore.Shared.GetDouble("GoalMonthlyHours") > 0 ? 230d : 190d;
+        var allHeight = (SettingStore.Shared.GetDouble("GoalDailyHours") > 0 || SettingStore.Shared.GetDouble("GoalMonthlyHours") > 0 ? 230d : 190d) * FontScale;
         var defaults = mode switch { "Compact" => (246d, 72d), "Goal" => (300d, 116d), "All" => (370d, allHeight), _ => (320d, 112d) };
         Width = Math.Clamp(SettingStore.Shared.GetDouble($"PinnedWidth.{mode}", defaults.Item1), MinWidth, MaxWidth);
         Height = Math.Clamp(SettingStore.Shared.GetDouble($"PinnedHeight.{mode}", defaults.Item2), MinHeight, MaxHeight);
@@ -90,6 +91,24 @@ public partial class PinnedWindow : Window
             Top = oldBottom - Height;
             ClampToWorkArea();
         }
+    }
+
+    private double FontScale => SettingStore.Shared.Get("PinnedFontSize", "Comfortable") switch
+    {
+        "Small" => 0.94,
+        "Large" => 1.24,
+        _ => 1.12
+    };
+
+    private void ApplyTextScale()
+    {
+        var scale = FontScale;
+        PinnedStatus.FontSize = 8 * scale; PinnedElapsed.FontSize = 16 * scale; PinnedMoney.FontSize = 22 * scale; PinnedTry.FontSize = 14 * scale; PinnedMomentum.FontSize = 8 * scale;
+        CompactStatus.FontSize = 9 * scale; CompactElapsed.FontSize = 23 * scale; CompactMoney.FontSize = 13 * scale; CompactTry.FontSize = 9 * scale;
+        GoalElapsed.FontSize = 14 * scale; GoalTodayText.FontSize = 9 * scale; GoalMonthText.FontSize = 9 * scale;
+        AllStatus.FontSize = 8 * scale; AllElapsed.FontSize = 16 * scale; AllMoney.FontSize = 23 * scale; AllTry.FontSize = 14 * scale; AllPerSecond.FontSize = 8 * scale;
+        AllAvgDay.FontSize = 9 * scale; AllAvgWeek.FontSize = 9 * scale; AllAvgMonth.FontSize = 9 * scale;
+        AllRadioIcon.FontSize = 13 * scale; AllRadioText.FontSize = 8 * scale; AllRadioButton.FontSize = 12 * scale;
     }
 
     private void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -141,8 +160,9 @@ public partial class PinnedWindow : Window
 
     private Border GoalRow(string name, double value, double goal, string color)
     {
+        var scale = FontScale;
         var stack = new StackPanel { Margin = new Thickness(0, 5, 0, 0) };
-        var row = new DockPanel(); row.Children.Add(new TextBlock { Text = name, FontSize = 8, Foreground = (System.Windows.Media.Brush)FindResource("MutedBrush") }); var valueText = new TextBlock { Text = $"{DurationText.Hours(value)} / {DurationText.Hours(goal)}", FontSize = 8, HorizontalAlignment = System.Windows.HorizontalAlignment.Right }; DockPanel.SetDock(valueText, Dock.Right); row.Children.Add(valueText); stack.Children.Add(row);
+        var row = new DockPanel(); row.Children.Add(new TextBlock { Text = name, FontSize = 8 * scale, Foreground = (System.Windows.Media.Brush)FindResource("MutedBrush") }); var valueText = new TextBlock { Text = $"{DurationText.Hours(value)} / {DurationText.Hours(goal)}", FontSize = 8 * scale, HorizontalAlignment = System.Windows.HorizontalAlignment.Right }; DockPanel.SetDock(valueText, Dock.Right); row.Children.Add(valueText); stack.Children.Add(row);
         var bar = new System.Windows.Controls.ProgressBar { Height = 5, Maximum = 1, Value = Math.Min(1, Math.Max(0, value / goal)), Foreground = new SolidColorBrush(ThemePalette.For(SettingStore.Shared.Get("Theme", "Carbon")).Color(color)), Background = (System.Windows.Media.Brush)FindResource("CardStrokeBrush"), Margin = new Thickness(0, 3, 0, 0) }; stack.Children.Add(bar);
         return new Border { Child = stack, Margin = new Thickness(0, 0, 0, 4) };
     }

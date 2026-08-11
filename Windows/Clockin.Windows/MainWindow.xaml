@@ -38,7 +38,7 @@
             <Button Style="{StaticResource PlainButton}" Content="▥" ToolTip="Earnings history" Click="History_Click"/>
             <Button Style="{StaticResource PlainButton}" Content="▦" ToolTip="Work heatmap" Click="Heatmap_Click"/>
             <Button Style="{StaticResource PlainButton}" Content="?" ToolTip="How to use Clockin" Click="Guide_Click"/>
-            <Button x:Name="ProgressButton" Style="{StaticResource PlainButton}" Width="38" FontSize="13" Content="LV 1" Foreground="{DynamicResource AccentBrush}" ToolTip="Progress, levels and badges" Click="Progress_Click"/>
+            <Button x:Name="ProgressButton" Style="{StaticResource PlainButton}" Width="48" FontSize="13" Content="LV 1" Foreground="{DynamicResource AccentBrush}" ToolTip="Progress, levels and badges" Click="Progress_Click"/>
             <Button Style="{StaticResource PlainButton}" Content="⚙" ToolTip="Settings" Click="Settings_Click"/>
             <Button x:Name="PinButton" Style="{StaticResource PlainButton}" Content="📌" ToolTip="Pin timer" Click="Pin_Click"/>
             <Button Style="{StaticResource WindowControlButton}" Content="−" ToolTip="Minimize to tray" Click="Minimize_Click"/>
