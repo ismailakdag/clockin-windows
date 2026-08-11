@@ -20,6 +20,7 @@
       <Setter Property="Padding" Value="9,6"/><Setter Property="Margin" Value="2"/><Setter Property="FontSize" Value="10"/>
     </Style>
     <Style x:Key="PlainButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="4,3"/><Setter Property="FontSize" Value="12"/><Setter Property="Width" Value="28"/><Setter Property="Height" Value="28"/><Setter Property="Margin" Value="0"/></Style>
+    <Style x:Key="WindowControlButton" TargetType="Button" BasedOn="{StaticResource PlainButton}"><Setter Property="Width" Value="30"/><Setter Property="Height" Value="30"/><Setter Property="FontSize" Value="16"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Padding" Value="0"/><Setter Property="Cursor" Value="Hand"/></Style>
     <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource PlainButton}"><Setter Property="Width" Value="Auto"/><Setter Property="MinWidth" Value="118"/><Setter Property="Height" Value="30"/><Setter Property="Padding" Value="7,4"/><Setter Property="HorizontalContentAlignment" Value="Center"/></Style>
     <Style x:Key="HeaderLinkButton" TargetType="Button" BasedOn="{StaticResource PlainButton}"><Setter Property="Width" Value="58"/><Setter Property="Height" Value="28"/><Setter Property="FontSize" Value="9"/><Setter Property="FontWeight" Value="Bold"/></Style>
     <Style x:Key="SectionLinkButton" TargetType="Button" BasedOn="{StaticResource PlainButton}"><Setter Property="Width" Value="Auto"/><Setter Property="MinWidth" Value="155"/><Setter Property="Height" Value="26"/><Setter Property="Padding" Value="0"/><Setter Property="FontSize" Value="9"/><Setter Property="HorizontalContentAlignment" Value="Left"/></Style>
@@ -39,8 +40,8 @@
             <Button x:Name="ProgressButton" Style="{StaticResource PlainButton}" Width="38" Content="LV 1" Foreground="{DynamicResource AccentBrush}" ToolTip="Progress, levels and badges" Click="Progress_Click"/>
             <Button Style="{StaticResource PlainButton}" Content="⚙" ToolTip="Settings" Click="Settings_Click"/>
             <Button x:Name="PinButton" Style="{StaticResource PlainButton}" Content="📌" ToolTip="Pin timer" Click="Pin_Click"/>
-            <Button Style="{StaticResource PlainButton}" Content="—" ToolTip="Minimize to tray" Click="Minimize_Click"/>
-            <Button Style="{StaticResource PlainButton}" Content="×" ToolTip="Hide to tray" Click="CloseToTray_Click"/>
+            <Button Style="{StaticResource WindowControlButton}" Content="—" ToolTip="Minimize to tray" Click="Minimize_Click"/>
+            <Button Style="{StaticResource WindowControlButton}" Content="×" ToolTip="Hide to tray" Click="CloseToTray_Click"/>
           </StackPanel></Border>
         </Grid>
       </Border>
